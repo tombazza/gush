@@ -1,0 +1,186 @@
+/* THEME: http://colorschemedesigner.com/#2G61Tc9ttw0w0 */
+
+/* Reset */
+html{color:#000;background:#FFF;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}input,textarea,select{*font-size:100%;}legend{color:#000;}
+
+/* Main styles */
+body {
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+}
+
+h1 {
+	margin: 0 0 10px;
+	padding: 15px;
+	font-size: 36px;
+	font-weight: bold;
+	border-bottom: 5px solid #b9e5a4; /*rgb(151, 203, 126);*/
+	/*	color: #468429;rgb(82, 138, 55);*/
+	color: #fff;
+	font-family: Lucida Sans Unicode, Lucida Grande, sans-serif;
+	background-color: #97cb7e; /*rgba(151, 203, 126, .7);*/
+	text-shadow: 0px 0px 10px #468429;
+	filter: dropshadow(color = #468429, offx = 0, offy = 0);
+}
+
+
+#search {
+	padding: 10px;
+}
+
+#search input {
+	width: 100%;
+	font-size: 30px;
+	border: 1px solid #7B986D;
+	padding: 5px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+#search input.loading {
+	background-image: url('/gush/images/loading.gif');
+	background-repeat: no-repeat;
+	background-position: 99%;
+}
+
+#results {
+	width: 100% !important;
+}
+
+#results_wrapper {
+	padding: 10px;
+}
+
+#results .info_row {
+	padding: 5px 0 !important;
+}
+
+.info_content {
+	display: none;
+}
+
+#results .info_content {
+	display: block;
+}
+
+table.dataTable td {
+	padding-left: 5px !important;
+}
+
+table.datatable tr.odd {
+	background-color: #C5E5B5 !important;
+}
+
+table.datatable tr.odd td.sorting_1,table.datatable tr.odd td.sorting_2,table.datatable tr.odd td.sorting_3
+	{
+	background-color: #97CB7E !important;
+}
+
+table.datatable tr.even td.sorting_1,table.datatable tr.even td.sorting_2,table.datatable tr.even td.sorting_3
+	{
+	background-color: #B9E5A4 !important;
+}
+
+/* login */
+#search input.passcode {
+	color: #808080 !important;
+}
+
+/* alt states */
+body.error h1 {
+	border-color: #EDA9B7;
+	background-color: #DB8898;
+	text-shadow: 0px 0px 10px #8E2C3F;
+	filter: dropshadow(color = #8E2C3F, offx = 0, offy = 0);
+}
+
+body.load h1 {
+	border-color: #F5C8AF;
+	background-color: #EBB292;
+	text-shadow: 0px 0px 10px #99552F;
+	filter: dropshadow(color = #99552F, offx = 0, offy = 0);
+}
+
+body.load #search input {
+	border-color: #99552F;
+}
+
+body.error #search input {
+	border-color: #8E2C3F;
+}
+
+/* info row */
+
+.info_content ul.tab-names li {
+	list-style: none;
+	float: left;
+	margin-right: 10px;
+	border-width: 1px 1px 0 1px;
+	border-color: #808080;
+	border-style: solid;
+	background-color: #F0F0F0;
+	color: #000 !important;
+	background-repeat: no-repeat;
+	background-position: 5px;
+	padding-left: 25px;
+}
+
+.info_content ul.tab-names li.file-listing {
+	background-image: url('../images/folder_page_white.png');
+}
+
+.info_content ul.tab-names li.comments {
+	background-image: url('../images/comments.png');
+}
+
+.info_content ul.tab-names li.info {
+	background-image: url('../images/information.png');
+}
+
+.info_content ul.tab-names li.selected {
+	background-color: #808080;
+}
+
+.info_content ul.tab-names li a {
+	color: #000 !important;
+	font-weight: bold;
+	text-decoration: none;
+	padding: 5px 5px 5px;
+	display: block;
+}
+
+.info_content ul.tab-names li.selected a {
+	color: #fff !important;
+}
+
+.info_content .tab-contents {
+	border: 1px solid #808080;
+	clear: both;
+	height: 250px;
+	overflow: auto;
+	position: relative;
+	padding: 5px;
+	background-color: #F0F0F0;
+	display: none;
+}
+
+.info_content .tab-shown {
+	display: block;
+}
+
+a.magnet {
+	padding-left: 20px;
+	background-image: url('../images/page_white_put.png');
+	background-repeat: no-repeat;
+	padding: 10px 10px 10px 30px;
+	display: block;
+	background-position: 10px;
+	text-decoration: none;
+	background-color: #97cb7e;
+	color: #fff;
+	font-weight: bold;
+	width: 100px;
+	border: 2px solid #b9e5a4;
+}
