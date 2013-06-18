@@ -29,12 +29,7 @@ class DataUpstream {
 			$config = array(
 				'adapter'    => 'Zend\Http\Client\Adapter\Curl',
 				'curloptions' => $curlOptions
-			);/*
-				'proxy_host' => 'localhost',
-				'proxy_port' => 8443,
-				'maxredirects' => 3,
-				'timeout' => 5
-			);*/
+			);
 			$client = new Client($url, $config);
 			$request = new Request();
 			$request->setUri($url);
