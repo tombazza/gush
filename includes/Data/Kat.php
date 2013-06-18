@@ -1,4 +1,5 @@
 <?php
+use Zend\Dom\Query;
 
 class Data_Kat extends DataUpstream {
 
@@ -38,7 +39,7 @@ class Data_Kat extends DataUpstream {
 	// files: #torrent_files tr
 	
 	public function getTorrentMeta($torrentId) {
-		$url = 'http://kat.ph/'.$torrentId.'.html';
+		$url = 'http://kickass.to/'.$torrentId.'.html';
 		$data = $this->retreiveData($url, self::FORMAT_PLAIN);
 		$meta = array(
 			'comments' => $this->getComments($data),
@@ -48,8 +49,8 @@ class Data_Kat extends DataUpstream {
 	}
 	
 	private function getComments($data) {
-		$dom = new Zend_Dom_Query($data);
-		$results = $dom->query('.commentText');
+		$dom = new Query($data);
+		$results = $dom->execute('.commentText');
 		$comments = array();
 		foreach($results as $parentElement) {
 			$newHTML = $this->nodeToHTML($parentElement);
@@ -64,14 +65,14 @@ class Data_Kat extends DataUpstream {
 	 * @return multitype:multitype:NULL Ambigous <unknown>
 	 */
 	private function getFileListing($data) {
-		$dom = new Zend_Dom_Query($data);
-		$results = $dom->query('#torrent_files tr');
+		$dom = new Query($data);
+		$results = $dom->execute('#torrent_files tr');
 		$row = array();
 	
 		foreach($results as $parentElement) {
 			$newHTML = $this->nodeToHTML($parentElement);
-			$subDom = new Zend_Dom_Query($newHTML);
-			$subResults = $subDom->query('td');
+			$subDom = new Query($newHTML);
+			$subResults = $subDom->execute('td');
 			$parts = array();
 			foreach($subResults as $subResult) {
 				foreach($subResult->childNodes as $childNode) {
@@ -97,7 +98,7 @@ class Data_Kat extends DataUpstream {
 		$urlData['field'] = $this->sortFields[$sortField];
 		$urlData['sorder'] = ($sortOrder ? 'asc' : 'desc');
 
-		$url = 'http://kat.ph/usearch/' . urlencode($query) . '/' . $page . '/?' . http_build_query($urlData);
+		$url = 'http://kickass.to/usearch/' . urlencode($query) . '/' . $page . '/?' . http_build_query($urlData);
 		return $url;
 	}
 

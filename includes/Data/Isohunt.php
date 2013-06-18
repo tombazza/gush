@@ -1,4 +1,5 @@
 <?php
+use Zend\Dom\Query;
 
 class Data_Isohunt extends DataUpstream {
 
@@ -43,8 +44,8 @@ class Data_Isohunt extends DataUpstream {
 	private function getComments($torrentId) {
 		$url = 'https://isohunt.com/torrent_details/'.$torrentId.'?tab=comments';
 		$data = $this->retreiveData($url, self::FORMAT_PLAIN);
-		$dom = new Zend_Dom_Query($data);
-		$results = $dom->query('.commentBody1');
+		$dom = new Query($data);
+		$results = $dom->execute('.commentBody1');
 		$comments = array();
 		foreach($results as $parentElement) {
 			$newHTML = $this->nodeToHTML($parentElement);
@@ -62,14 +63,14 @@ class Data_Isohunt extends DataUpstream {
 		// #torrent_details tr
 		$url = 'https://isohunt.com/torrent_details/'.$torrentId.'?tab=summary';
 		$data = $this->retreiveData($url, self::FORMAT_PLAIN);
-		$dom = new Zend_Dom_Query($data);
-		$results = $dom->query('#torrent_details tr');
+		$dom = new Query($data);
+		$results = $dom->execute('#torrent_details tr');
 		$row = array();
 
 		foreach($results as $parentElement) {
 			$newHTML = $this->nodeToHTML($parentElement);
-			$subDom = new Zend_Dom_Query($newHTML);
-			$subResults = $subDom->query('td');
+			$subDom = new Query($newHTML);
+			$subResults = $subDom->execute('td');
 			$parts = array();
 			foreach($subResults as $subResult) {
 				foreach($subResult->childNodes as $childNode) {

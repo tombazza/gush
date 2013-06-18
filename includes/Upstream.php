@@ -1,6 +1,7 @@
 <?php 
-require_once 'Zend/Http/Client.php';
-require_once 'Zend/Dom/Query.php';
+use Zend\Dom\Query;
+use Zend\Http\Client;
+use Zend\Http\Request;
 
 class DataUpstream {
 
@@ -17,22 +18,34 @@ class DataUpstream {
 	const SORT_ASC = 1;
 
 	protected function retreiveData($url, $format = self::FORMAT_PLAIN, $postData = false) {
+		$curlOptions = array(
+			CURLOPT_PROXY => 'localhost',
+			CURLOPT_PROXYPORT => 8443,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_MAXREDIRS => 5,
+			CURLOPT_TIMEOUT => 5
+		);
 		try {
 			$config = array(
-			    'adapter'    => 'Zend_Http_Client_Adapter_Proxy',
-			    'proxy_host' => 'localhost',
-			    'proxy_port' => 8443,
+				'adapter'    => 'Zend\Http\Client\Adapter\Curl',
+				'curloptions' => $curlOptions
+			);/*
+				'proxy_host' => 'localhost',
+				'proxy_port' => 8443,
 				'maxredirects' => 3,
 				'timeout' => 5
-			);
-			$client = new Zend_Http_Client($url, $config);
+			);*/
+			$client = new Client($url, $config);
+			$request = new Request();
+			$request->setUri($url);
+			$client->setRequest($request);
 			if($postData) {
-				$client->setParameterPost($postData);
-				$response = $client->request('POST');
-			} else {
-				$response = $client->request();
+				$request->setMethod(Request::METHOD_POST);
+				$request->setParameterPost($postData);
 			}
-			if($response->getStatus() == 200) {
+			$client->setRequest($request);
+			$response = $client->dispatch($request);
+			if($response->getStatusCode() == 200) {
 				switch($format) {
 					case DataUpstream::FORMAT_JSON:
 						return json_decode($response->getBody());
@@ -44,7 +57,7 @@ class DataUpstream {
 						break;
 				}
 			} else {
-				throw new Exception('Source returned code '.$response->getStatus());
+				throw new Exception('Source returned code '.$response->getStatusCode());
 			}
 		} catch(Exception $e) {
 			print_r($e);

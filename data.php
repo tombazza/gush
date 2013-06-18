@@ -1,8 +1,8 @@
 <?php 
-set_include_path(get_include_path().PATH_SEPARATOR.'/opt/php-frameworks/zend-1.11.11');
 ini_set('display_errors', 'on');
 error_reporting(E_ALL);
 
+require_once 'vendor/autoload.php';
 require_once 'includes/Upstream.php';
 
 $passcode = trim(file_get_contents('/var/sites/gush.passcode.txt'));

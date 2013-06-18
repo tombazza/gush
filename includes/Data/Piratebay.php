@@ -1,4 +1,5 @@
 <?php
+use Zend\Dom\Query;
 
 class Data_Piratebay extends DataUpstream {
 
@@ -17,14 +18,14 @@ class Data_Piratebay extends DataUpstream {
 	}
 
 	private function parseResponse($html) {
-		$dom = new Zend_Dom_Query($html);
-		$results = $dom->query('tr');
+		$dom = new Query($html);
+		$results = $dom->execute('tr');
 
 		$i = 0;
 		foreach($results as $parentElement) {
 			$newHTML = $this->nodeToHTML($parentElement);
-			$subDom = new Zend_Dom_Query($newHTML);
-			$subResults = $subDom->query('td');
+			$subDom = new Query($newHTML);
+			$subResults = $subDom->execute('td');
 			$parts = array();
 			foreach($subResults as $subResult) {
 				foreach($subResult->childNodes as $childNode) {
@@ -39,7 +40,6 @@ class Data_Piratebay extends DataUpstream {
 		$data = array();
 		foreach($row as $item) {
 			$infoLinkParts = explode('/', $this->getAttributeFromHTML($item[1], 'a', 'href'));
-			print_r($item);
 			$totalFields = count($item);
 			$itemData = array();
 			$itemData['name'] = $this->getTextBetweenTags($item[1], 'a');
@@ -76,8 +76,8 @@ class Data_Piratebay extends DataUpstream {
 			'page' => '1'
 		);
 		$data = $this->retreiveData($url, self::FORMAT_PLAIN, $post);
-		$dom = new Zend_Dom_Query($data);
-		$results = $dom->query('div[id*="comment"] .comment');
+		$dom = new Query($data);
+		$results = $dom->execute('div[id*="comment"] .comment');
 		$comments = array();
 		foreach($results as $parentElement) {
 			$newHTML = $this->nodeToHTML($parentElement);
@@ -89,14 +89,14 @@ class Data_Piratebay extends DataUpstream {
 	private function getFileListing($torrentId) {
 		$url = 'https://thepiratebay.sx/ajax_details_filelist.php?id='. $torrentId;
 		$data = $this->retreiveData($url, self::FORMAT_PLAIN);
-		$dom = new Zend_Dom_Query($data);
-		$results = $dom->query('tr');
+		$dom = new Query($data);
+		$results = $dom->execute('tr');
 		$row = array();
 
 		foreach($results as $parentElement) {
 			$newHTML = $this->nodeToHTML($parentElement);
-			$subDom = new Zend_Dom_Query($newHTML);
-			$subResults = $subDom->query('td');
+			$subDom = new Query($newHTML);
+			$subResults = $subDom->execute('td');
 			$parts = array();
 			foreach($subResults as $subResult) {
 				foreach($subResult->childNodes as $childNode) {
