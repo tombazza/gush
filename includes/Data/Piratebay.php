@@ -90,7 +90,7 @@ class Data_Piratebay extends DataUpstream {
 	}
 	
 	private function getComments($torrentId) {
-		$url = 'https://thepiratebay.sx/ajax_details_comments.php';
+		$url = 'http://thepiratebay.sx/ajax_details_comments.php';
 		$post = array(
 			'id' => $torrentId,
 			'page' => '1'
@@ -107,7 +107,7 @@ class Data_Piratebay extends DataUpstream {
 	}
 	
 	private function getFileListing($torrentId) {
-		$url = 'https://thepiratebay.sx/ajax_details_filelist.php?id='. $torrentId;
+		$url = 'http://thepiratebay.sx/ajax_details_filelist.php?id='. $torrentId;
 		$data = $this->retreiveData($url, self::FORMAT_PLAIN);
 		$dom = new Query($data);
 		$results = $dom->execute('tr');
@@ -156,7 +156,7 @@ class Data_Piratebay extends DataUpstream {
 
 	private function buildUrl($query, $page = 0, $sortField = self::SORT_SEEDS, $sortOrder = self::SORT_DESC) {
 		$sortValue = ($this->sortFields[$sortField] + $sortOrder);
-		$url = 'https://thepiratebay.sx/search/' . urlencode($query) . '/' . $page . '/' . $sortValue;
+		$url = 'http://thepiratebay.sx/search/' . urlencode($query) . '/' . $page . '/' . $sortValue;
 		return $url;
 	}
 }

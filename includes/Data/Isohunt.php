@@ -62,7 +62,7 @@ class Data_Isohunt extends DataUpstream {
 	}
 	
 	private function getComments($torrentId) {
-		$url = 'https://isohunt.com/torrent_details/'.$torrentId.'?tab=comments';
+		$url = 'http://isohunt.com/torrent_details/'.$torrentId.'?tab=comments';
 		$data = $this->retreiveData($url, self::FORMAT_PLAIN);
 		$dom = new Query($data);
 		$results = $dom->execute('.commentBody1');
@@ -81,7 +81,7 @@ class Data_Isohunt extends DataUpstream {
 	 */
 	private function getFileListing($torrentId) {
 		// #torrent_details tr
-		$url = 'https://isohunt.com/torrent_details/'.$torrentId.'?tab=summary';
+		$url = 'http://isohunt.com/torrent_details/'.$torrentId.'?tab=summary';
 		$data = $this->retreiveData($url, self::FORMAT_PLAIN);
 		$dom = new Query($data);
 		$results = $dom->execute('#torrent_details tr');
@@ -118,7 +118,7 @@ class Data_Isohunt extends DataUpstream {
 		$urlData['sort'] = $this->sortFields[$sortField];
 		$urlData['order'] = ($sortOrder ? 'asc' : 'desc');
 
-		$url = 'https://ca.isohunt.com/js/json.php?' . http_build_query($urlData);
+		$url = 'http://ca.isohunt.com/js/json.php?' . http_build_query($urlData);
 		return $url;
 	}
 	

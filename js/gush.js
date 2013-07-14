@@ -18,13 +18,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-var $Gush = function() {
+var settings = {
+    dataEndpoint: 'data.php',
+    numberEngines: 3
+};
+
+var $Gush = function($, $Config) {
 	var searchTable = false,
 		openRow = false,
 		infoRow = false,
 		resultsIndex = [],
 		loading = 0,
-		passcode = false,
 		error = false,
 		errorTypes = ['Generic', 'Data', 'Auth'],
 		requests = [];
@@ -37,93 +41,168 @@ var $Gush = function() {
 	}
 	
 	function formFocus(e) {
-		if(!passcode) {
+		if(!connectionManager.hasAuth()) {
 			$(this).removeClass('passcode').val('').attr('type', 'password');
 		}
 	}
 	function formBlur(e) {
-		if(!passcode) {
+		if(!connectionManager.hasAuth()) {
 			$(this).val('').attr('type', 'text').val('passcode?').addClass('passcode');
 		}
 	}
 	function formSubmit(e) {
 		if (e.which == 13) {
-			if(!passcode) {
-				passcode = $(this).val();
-				$(this).addClass('loading');
-				$.post('data.php', {a: 1, p: passcode}, parseResponse, "json");
+			if(!connectionManager.hasAuth()) {
+                $(this).addClass('loading');
+				connectionManager.performLogin($(this).val(), postAuth);
 			} else {
-				error = false;
-				$('body').removeClass('error');
-				if (searchTable) searchTable.fnClearTable();
-				resultsIndex = [];
-				var query = $('#query').val();
-				$('#query').addClass('loading');
-				var url = 'data.php';
-				for (i = 0; i < 3; i++) {
-					loading++;
-					requests.push($.post(url, {
-						e: i,
-						q: query,
-						p: passcode
-					}, parseResponse, "json"));
-				}
+                performSearch();
+				
 			}
 		}
 	}
+ 
+    function performSearch() {
+        error = false;
+        $('body').removeClass('error');
+        if (searchTable) searchTable.fnClearTable();
+        resultsIndex = [];
+        var query = $('#query').val();
+        $('#query').addClass('loading');
+        connectionManager.submitSearch(query, searchResponse);
+    }
+    
+    var connectionManager = function() {
+        var requests = [],
+            passcode = '',
+            authenticated = false;
+    
+        function performLogin(code, callback) {
+            passcode = $.trim(code);
+            loadData({
+                a: 'auth',
+                p: passcode
+            }, function(data) {
+                handleAuthResponse(data, callback);
+            });
+        }
+        
+        function submitSearch(query, callback) {
+            for(i = 0; i < $Config.numberEngines; i++) {
+                loadData({
+                    a: 'search',
+                    e: i,
+                    q: query,
+                    p: passcode
+                }, callback);
+            }
+        }
+        
+        function loadData(post, callback) {
+            var requestId = requests.length + 1;
+            requests[requestId] = $.ajax({
+                type: "POST",
+                url: $Config.dataEndpoint,
+                data: post,
+                dataType: 'json',
+                success: function(data) {
+                    var position = $.inArray(requestId, requests);
+                    if(~position) requests.splice(position, 1);
+                    if(checkErrorState(data)) callback(data);
+                },
+                error: function(xhr, status, error) {
+                    displayError({
+                        message: 'Request failed',
+                        code: 3
+                    });
+                    var position = $.inArray(requestId, requests);
+                    if(~position) requests.splice(position, 1);
+                }
+            });
+        }
+        
+        function checkErrorState(data) {
+            if(data.error) {
+				displayError(data.error);
+                return false;
+            }
+            return true;
+        }
+        
+        function handleAuthResponse(data, callback) {
+            if(!checkErrorState) return;
+            if(data.auth) {
+                authenticated = true;
+                callback();
+            }
+        }
+        
+        function terminateRequests() {
+            $.each(requests, function(id, xhr) {
+                if(xhr) xhr.abort();
+            });
+        }
+    
+        function getAuthenticated() {
+            return authenticated;
+        }
+        
+        return {
+            performLogin: performLogin,
+            submitSearch: submitSearch,
+            stopAll: terminateRequests,
+            hasAuth: getAuthenticated
+        };
+    }();
 	
-	function terminateRequests() {
-		$.each(requests, function(id, xhr) {
-			xhr.abort();
-		});
-	}
 	
-	function handleError(error) {
+    
+    /**
+     * Executed in the event of a successful authentication
+     * @returns null
+     */
+    function postAuth() {
+        $('body').removeClass('load');
+        $('#query').removeClass('loading').attr('type', 'text').val('');
+        yepnope({
+            load: {
+                'dtCss': '//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/css/jquery.dataTables.css',
+                'dtJs': '//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js'
+            },
+            callback: {
+                'dtJs': function(url, result, key) {
+                    jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+                        "file-size-pre": function( a ) {
+                            var x = a.substring(0,a.length - 2);
+                            var x_unit = (a.substring(a.length - 2, a.length) == "MB" ? 1000 : (a.substring(a.length - 2, a.length) == "GB" ? 1000000 : 1));
+                            return parseInt( x * x_unit, 10 );
+                        },
+                        "file-size-asc": function( a, b ) {return ((a < b) ? -1 : ((a > b) ? 1 : 0));},
+                        "file-size-desc": function( a, b ) {return ((a < b) ? 1 : ((a > b) ? -1 : 0));}
+                    });
+                }
+            }
+        });
+    }
+	
+	function displayError(response) {
 		var query = $('#query');
-		console.log(error);
+		console.log(response);
 		$('body').removeClass('load').addClass('error');
-		query.attr('type', 'text').val('Error: ' + error.message);
-		error = true;
-		if(error.code == 2) {
+		query.attr('type', 'text').val('Error: ' + response.message);
+		
+		if(response.code == 2) {
 			query.attr('disabled', 'disabled').blur();
-			terminateRequests();
+            connectionManager.stopAll();
 			setTimeout(function() {window.location = window.location;}, 3000);
 		} else {
 			query.removeClass('loading');
 		}
+        error = true;
 		
 	}
-	function parseResponse(data) {
-		if(!error) {
-			if(data.error) {
-				handleError(data.error);
-				return;
-			}
-			
-			if(data.auth) {
-				$('body').removeClass('load');
-				$('#query').removeClass('loading').attr('type', 'text').val('');
-				yepnope({
-					load: {
-						'dtCss': '//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/css/jquery.dataTables.css',
-						'dtJs': '//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js'
-					},
-					callback: {
-						'dtJs': function(url, result, key) {
-							jQuery.extend(jQuery.fn.dataTableExt.oSort, {
-								"file-size-pre": function( a ) {
-								    var x = a.substring(0,a.length - 2);
-								    var x_unit = (a.substring(a.length - 2, a.length) == "MB" ? 1000 : (a.substring(a.length - 2, a.length) == "GB" ? 1000000 : 1));
-								    return parseInt( x * x_unit, 10 );
-								},
-							    "file-size-asc": function( a, b ) {return ((a < b) ? -1 : ((a > b) ? 1 : 0));},
-							    "file-size-desc": function( a, b ) {return ((a < b) ? 1 : ((a > b) ? -1 : 0));}
-							});
-						}
-					}
-				});
-				return;
-			}
+	function searchResponse(data) {
+        console.log(data);
 			loading--;
 			var tableData = {
 				bPaginate: false,
@@ -158,7 +237,6 @@ var $Gush = function() {
 			});
 			if (loading == 0) $('#query').removeClass('loading');
 			initTable(tableData);
-		}
 	}
 	function initTable(tableData) {
 		if (!searchTable) {
@@ -186,6 +264,8 @@ var $Gush = function() {
 		console.log(row);
 		var magnetURI = 'magnet:?xt=' + row.magnetParts.xt[0] + '&tr=' + row.magnetParts.tr.join('&tr=') + '&dn=' + row.magnetParts.dn[0];
 		infoRow.find('a.magnet').attr('href', magnetURI);
+        
+        
 		return infoRow;
 	}
 
@@ -194,7 +274,7 @@ var $Gush = function() {
 	};
 	
 	return contract;
-}();
+}(jQuery, settings);
 
 
 $(document).ready($Gush.init);

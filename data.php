@@ -24,8 +24,12 @@ error_reporting(E_ALL);
 
 require_once 'vendor/autoload.php';
 require_once 'includes/Upstream.php';
+require_once 'includes/Config.php';
 
-$passcode = trim(file_get_contents('/var/sites/gush.passcode.txt'));
+Config::Load(include 'config.php');
+$config = Config::getData();
+
+$passcode = trim(file_get_contents($config['passcode_file']));
 
 
 class GushException extends Exception {
@@ -45,19 +49,25 @@ try {
 		throw new GushException('I don\'t know who you are.', GushException::Auth);
 	}
 	
-	if(array_key_exists('a', $_POST)) {
-		$output = new stdClass();
-		$output->auth = 1;
-	} else {
-		$query = $_POST['q'];
-		$engines = array('Piratebay', 'Kat', 'Isohunt');
-		$engine = $engines[$_POST['e']];
-		
-		require_once 'includes/Data/' . $engine . '.php';
-		
-		$name = 'Data_' . $engine;
-		$data = new $name();
-		$output = $data->getData($query);
+    $action = 'auth';
+    if(array_key_exists('a', $_POST)) $action = $_POST['a'];
+    
+    switch($action) {
+        case 'search':
+            $query = $_POST['q'];
+            $engines = array('Piratebay', 'Kat', 'Isohunt');
+            $engine = $engines[$_POST['e']];
+
+            require_once 'includes/Data/' . $engine . '.php';
+
+            $name = 'Data_' . $engine;
+            $data = new $name();
+            $output = $data->getData($query);
+            break;
+        default:
+            $output = new stdClass();
+            $output->auth = 1;
+            break;
 	}
 } catch (Exception $e) {
 	$output = new GushOutput();

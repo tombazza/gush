@@ -36,21 +36,16 @@ class DataUpstream {
 
 	const SORT_DESC = 0;
 	const SORT_ASC = 1;
+        
+        protected $config;
+        
+        public function __construct() {
+            $this->config = Config::getData();
+        }
 
 	protected function retreiveData($url, $format = self::FORMAT_PLAIN, $postData = false) {
-		$curlOptions = array(
-			CURLOPT_PROXY => 'localhost',
-			CURLOPT_PROXYPORT => 8443,
-			CURLOPT_FOLLOWLOCATION => true,
-			CURLOPT_MAXREDIRS => 5,
-			CURLOPT_TIMEOUT => 5
-		);
 		try {
-			$config = array(
-				'adapter'    => 'Zend\Http\Client\Adapter\Curl',
-				'curloptions' => $curlOptions
-			);
-			$client = new Client($url, $config);
+			$client = new Client($url, $this->config['adapter_settings']);
 			$request = new Request();
 			$request->setUri($url);
 			$client->setRequest($request);
@@ -75,7 +70,6 @@ class DataUpstream {
 				throw new Exception('Source returned code '.$response->getStatusCode());
 			}
 		} catch(Exception $e) {
-			print_r($e);
 			throw new GushException($e->getMessage(), GushException::Data);
 			return false;
 		}
