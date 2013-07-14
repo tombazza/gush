@@ -74,7 +74,7 @@ class Data_Piratebay extends DataUpstream {
 			if(stripos($item[3], 'comment')) {
 				$itemData['comments'] = preg_replace("/[^0-9]/","", $this->getAttributeFromHTML($item[3], 'img', 'alt'));
 			}
-			$itemData['metadata']['Piratebay']['id'] = $infoLinkParts[2];
+			$itemData['metadata'] = array('name' => 'Piratebay', 'id' => $infoLinkParts[2]);
 			
 			$data[] = $itemData;
 		}
@@ -139,6 +139,7 @@ class Data_Piratebay extends DataUpstream {
 	
 	private function convertFileSize($size) {
 		$fileSize = str_replace(array('Size ', '&nbsp;'), '', trim($size));
+        $itemSize = 0;
 		switch(strtolower(substr($fileSize, -3))) {
 			case 'kib':
 				$itemSize = (float) substr($fileSize, 0, (strlen($fileSize - 3))) * 1024;

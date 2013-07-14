@@ -14,20 +14,15 @@
                 <table id="results"></table>
                 <div class="info_content">
                         <ul class="tab-names">
-                                <li class="info selected"><a href="javascript:void(0);">Details</a></li>
-                                <li class="file-listing"><a href="javascript:void(0);">File Listing</a></li>
-                                <li class="comments"><a href="javascript:void(0);">Comments (250)</a></li>
+                                <li id="info-tab" class="selected"><a href="javascript:void(0);">Details</a></li>
+                                <li id="file-tab"><a href="javascript:void(0);">File Listing</a></li>
+                                <li id="comments-tab"><a href="javascript:void(0);">Comments (250)</a></li>
                         </ul>
-                        <div class="info-contents tab-contents tab-shown">
+                        <div id="info-page" class="tab-contents tab-shown">
                                 <a href="#" class="magnet">Magnet Link</a>
-                                <h4>Trackers:</h4>
-                                <ul>
-                                        <li>tracker.domain.com</li>
-                                        <li>tracker3.domain.net</li>
-                                </ul>
                         </div>
-                        <div class="file-contents tab-contents"></div>
-                        <div class="comments-list tab-contents"></div>
+                    <div id="file-page" class="tab-contents"><table><thead><tr><th>File</th><th>Size</th></tr></thead><tbody></tbody></table></div>
+                        <div id="comments-page" class="tab-contents"></div>
                 </div>
         </body>
 </html>

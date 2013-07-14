@@ -47,7 +47,7 @@ class Data_Isohunt extends DataUpstream {
 					'hash' => strtoupper((string) $item->hash),
 					'magnetParts' => $this->parseMagnetLink($magnetLink),
 					'comments' => $item->comments,
-					'metadata' => array('Isohunt' => array('id' => $item->guid))
+					'metadata' => array('name' => 'Isohunt', 'id' => $item->guid)
 			);
 		}
 		return $data;

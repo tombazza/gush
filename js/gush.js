@@ -98,6 +98,15 @@ var $Gush = function($, $Config) {
             }
         }
         
+        function getMetadata(id, engine, callback) {
+            loadData({
+                a: 'metadata',
+                e: engine,
+                i: id,
+                p: passcode
+            }, callback);
+        }
+        
         function loadData(post, callback) {
             var requestId = requests.length + 1;
             requests[requestId] = $.ajax({
@@ -106,19 +115,22 @@ var $Gush = function($, $Config) {
                 data: post,
                 dataType: 'json',
                 success: function(data) {
-                    var position = $.inArray(requestId, requests);
-                    if(~position) requests.splice(position, 1);
+                    deleteRequest(requestId);
                     if(checkErrorState(data)) callback(data);
                 },
                 error: function(xhr, status, error) {
+                    deleteRequest(requestId);
                     displayError({
                         message: 'Request failed',
-                        code: 3
+                        code: 1
                     });
-                    var position = $.inArray(requestId, requests);
-                    if(~position) requests.splice(position, 1);
                 }
             });
+        }
+        
+        function deleteRequest(requestId) {
+            var position = $.inArray(requestId, requests);
+            if(~position) requests.splice(position, 1);
         }
         
         function checkErrorState(data) {
@@ -151,6 +163,7 @@ var $Gush = function($, $Config) {
             performLogin: performLogin,
             submitSearch: submitSearch,
             stopAll: terminateRequests,
+            getMeta: getMetadata,
             hasAuth: getAuthenticated
         };
     }();
@@ -265,9 +278,57 @@ var $Gush = function($, $Config) {
 		var magnetURI = 'magnet:?xt=' + row.magnetParts.xt[0] + '&tr=' + row.magnetParts.tr.join('&tr=') + '&dn=' + row.magnetParts.dn[0];
 		infoRow.find('a.magnet').attr('href', magnetURI);
         
+        var commentsText = 'Comments';
+        if(row.comments) {
+            commentsText = 'Comments (' + row.comments + ')';
+        }
+        infoRow.find('#comments-tab a').html(commentsText);
+        
+        infoRow.find('#file-page table tbody').html('');
+        infoRow.find('#comments-page').html('');
+        
+        infoRow.find('li a').click(function(e){
+            e.preventDefault();
+            infoRow.find('li').removeClass('selected');
+            $(this).parent().addClass('selected');
+            var id = $(this).parent().attr('id').replace('-tab', '');
+            infoRow.find('.tab-contents').hide();
+            infoRow.find('#' + id + '-page').show();
+        });
+        $.each(row.metadata, function(id, meta) {
+            connectionManager.getMeta(meta.id, meta.name, receiveMetaData);
+        });
         
 		return infoRow;
 	}
+    
+    function receiveMetaData(data) {
+        console.log(data);
+        if(data.files.length) {
+            filesPage = infoRow.find('#file-page table tbody');
+            var fileList = '';
+            if(filesPage.html() == '') {
+                $.each(data.files, function(id, value){
+                    fileList += '<tr><td>' + value.filename + '</td><td>' + value.size + '</td></tr>';
+                });
+                infoRow.find('#file-page table tbody').html(fileList);
+            }
+        }
+        if(data.comments) {
+            commentsPage = infoRow.find('#comments-page');
+            commentCount = infoRow.find('#comments-tab a').html().match(/\d+\.?\d*/g);
+            console.log(commentCount);
+            if(!commentCount) commentCount = 0;
+            var commentsHtml = commentsPage.html();
+            for(i = 0; i < data.comments.length; i++) {
+                comment = $.trim(data.comments[i]);
+                if(comment) commentsHtml += '<div>' + comment + '</div>';
+                commentCount++;
+            }
+            commentsPage.html(commentsHtml);
+            infoRow.find('#comments-tab a').html('Comments (' + commentCount + ')');
+        }
+    }
 
 	var contract = {
 		init: init

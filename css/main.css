@@ -127,15 +127,15 @@ body.error #search input {
 	padding-left: 25px;
 }
 
-.info_content ul.tab-names li.file-listing {
+.info_content ul.tab-names li#file-tab {
 	background-image: url('../images/folder_page_white.png');
 }
 
-.info_content ul.tab-names li.comments {
+.info_content ul.tab-names li#comments-tab {
 	background-image: url('../images/comments.png');
 }
 
-.info_content ul.tab-names li.info {
+.info_content ul.tab-names li#info-tab {
 	background-image: url('../images/information.png');
 }
 
@@ -168,6 +168,12 @@ body.error #search input {
 
 .info_content .tab-shown {
 	display: block;
+}
+
+.info_content #comments-page div {
+    background-color: #dfdfdf;
+    padding: 5px;
+    margin-bottom: 10px;
 }
 
 a.magnet {

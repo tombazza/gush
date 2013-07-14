@@ -28,7 +28,7 @@ require_once 'includes/Config.php';
 
 Config::Load(include 'config.php');
 $config = Config::getData();
-
+define('APP_LOCATION', getcwd());
 $passcode = trim(file_get_contents($config['passcode_file']));
 
 
@@ -44,6 +44,26 @@ class GushException extends Exception {
 
 class GushOutput {}
 
+function clean($string) {
+    $string = preg_replace('/[^a-z0-9 -_\(\)]/i', '', $string);
+    return trim(strip_tags($string));
+}
+
+/**
+ * Loads an engine resource and returns it
+ * @param string $engine
+ * @return DataUpstream
+ */
+function loadEngine($engine) {
+    $path = APP_LOCATION . '/includes/Data/' . basename($engine . '.php');
+    if(file_exists($path)) {
+        require_once $path;
+        $name = 'Data_' . $engine;
+        return new $name();
+    } else exit;
+}
+
+
 try {
 	if(!array_key_exists('p', $_POST) || $_POST['p'] != $passcode) {
 		throw new GushException('I don\'t know who you are.', GushException::Auth);
@@ -55,14 +75,17 @@ try {
     switch($action) {
         case 'search':
             $query = $_POST['q'];
-            $engines = array('Piratebay', 'Kat', 'Isohunt');
-            $engine = $engines[$_POST['e']];
-
-            require_once 'includes/Data/' . $engine . '.php';
-
-            $name = 'Data_' . $engine;
-            $data = new $name();
+            $engine = $config['engines'][$_POST['e']];
+            $data = loadEngine($engine);
             $output = $data->getData($query);
+            break;
+        case 'metadata':
+            $engineId = array_search(clean($_POST['e']), $config['engines']);
+            if($engineId !== false) {
+                $engine = $config['engines'][$engineId];
+                $data = loadEngine($engine);
+                $output = $data->getTorrentMeta($_POST['i']);
+            }
             break;
         default:
             $output = new stdClass();

@@ -12,4 +12,5 @@ return array(
             CURLOPT_TIMEOUT => 5
         )
     ),
+    'engines' => array('Piratebay', 'Kat', 'Isohunt')
 );

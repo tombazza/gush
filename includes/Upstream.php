@@ -23,6 +23,7 @@ use Zend\Dom\Query;
 use Zend\Http\Client;
 use Zend\Http\Request;
 
+
 class DataUpstream {
 
 	const FORMAT_JSON = 0;
@@ -37,21 +38,21 @@ class DataUpstream {
 	const SORT_DESC = 0;
 	const SORT_ASC = 1;
         
-        protected $config;
-        
-        public function __construct() {
-            $this->config = Config::getData();
-        }
+    protected $config;
+
+    public function __construct() {
+        $this->config = Config::getData();
+    }
 
 	protected function retreiveData($url, $format = self::FORMAT_PLAIN, $postData = false) {
 		try {
 			$client = new Client($url, $this->config['adapter_settings']);
 			$request = new Request();
 			$request->setUri($url);
-			$client->setRequest($request);
 			if($postData) {
+                $client->setEncType(Client::ENC_URLENCODED);
 				$request->setMethod(Request::METHOD_POST);
-				$request->setParameterPost($postData);
+                $request->getPost()->fromArray($postData);
 			}
 			$client->setRequest($request);
 			$response = $client->dispatch($request);
@@ -70,6 +71,7 @@ class DataUpstream {
 				throw new Exception('Source returned code '.$response->getStatusCode());
 			}
 		} catch(Exception $e) {
+            print_r($e);
 			throw new GushException($e->getMessage(), GushException::Data);
 			return false;
 		}
