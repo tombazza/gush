@@ -338,8 +338,10 @@ var $Gush = function ($, $Config) {
             var commentsHtml = commentsPage.html();
             for (i = 0; i < data.comments.length; i++) {
                 comment = $.trim(data.comments[i]);
-                if (comment) commentsHtml += '<div>' + comment + '</div>';
-                commentCount++;
+                if (comment) {
+                    commentsHtml += '<div>' + comment + '</div>';
+                    commentCount++;
+                }
             }
             commentsPage.html(commentsHtml);
             infoRow.find('#comments-tab a').html('Comments (' + commentCount + ')');

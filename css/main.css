@@ -97,14 +97,14 @@ body.error h1 {
 }
 
 body.load h1 {
-	border-color: #F5C8AF;
-	background-color: #EBB292;
-	text-shadow: 0px 0px 10px #99552F;
-	filter: dropshadow(color = #99552F, offx = 0, offy = 0);
+    border-color: #dbdbdb;
+    background-color: #bbbbbb;
+    text-shadow: 0px 0px 10px #616161;
+    filter: dropshadow(color = #616161, offx = 0, offy = 0);
 }
 
 body.load #search input {
-	border-color: #99552F;
+	border-color: #616161;
 }
 
 body.error #search input {
