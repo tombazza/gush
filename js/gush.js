@@ -143,7 +143,6 @@ var $Gush = function ($, $Config) {
         }
 
         function handleAuthResponse(data, callback) {
-            if (!checkErrorState) return;
             if (data.auth) {
                 authenticated = true;
                 callback();
