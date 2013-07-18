@@ -1,7 +1,7 @@
 <?php
 
 return array(
-    'passcode_file' => '/var/sites/gush.passcode.txt',
+    'passcode_file' => '../gush.passcode.txt',
     'adapter_settings' => array(
         'adapter'    => 'Zend\Http\Client\Adapter\Curl',
         'curloptions' => array(
