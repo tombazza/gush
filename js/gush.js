@@ -205,7 +205,7 @@ var $Gush = function ($, $Config) {
 
     function displayError(response) {
         var query = $('#query');
-        console.log(response);
+        logData(response);
         $('body').removeClass('load').addClass('error');
         query.attr('type', 'text').val('Error: ' + response.message);
 
@@ -223,7 +223,7 @@ var $Gush = function ($, $Config) {
     }
 
     function searchResponse(data) {
-        console.log(data);
+        logData(data);
         loading--;
         var tableData = {
             bPaginate: false,
@@ -289,7 +289,7 @@ var $Gush = function ($, $Config) {
 
     function drawInfoRow(hash) {
         var row = resultsIndex[hash];
-        console.log(row);
+        logData(row);
         var magnetURI = 'magnet:?xt=' + row.magnetParts.xt[0] + '&tr=' + row.magnetParts.tr.join('&tr=') + '&dn=' + row.magnetParts.dn[0];
         infoRow.find('a.magnet').attr('href', magnetURI);
 
@@ -318,7 +318,7 @@ var $Gush = function ($, $Config) {
     }
 
     function receiveMetaData(data) {
-        console.log(data);
+        logData(data);
         if (data.files.length) {
             filesPage = infoRow.find('#file-page table tbody');
             var fileList = '';
@@ -332,7 +332,7 @@ var $Gush = function ($, $Config) {
         if (data.comments) {
             commentsPage = infoRow.find('#comments-page');
             commentCount = infoRow.find('#comments-tab a').html().match(/\d+\.?\d*/g);
-            console.log(commentCount);
+            logData(commentCount);
             if (!commentCount) commentCount = 0;
             var commentsHtml = commentsPage.html();
             for (i = 0; i < data.comments.length; i++) {
@@ -345,6 +345,10 @@ var $Gush = function ($, $Config) {
             commentsPage.html(commentsHtml);
             infoRow.find('#comments-tab a').html('Comments (' + commentCount + ')');
         }
+    }
+    
+    function logData(data) {
+        window.console && console.log(data);
     }
 
     var contract = {
