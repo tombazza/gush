@@ -33,13 +33,13 @@ $passcode = trim(file_get_contents($config['passcode_file']));
 
 
 class GushException extends Exception {
-	const Auth = 2;
-	const Data = 1;
-	const Generic = 0;
-	
-	public function __construct($message, $code = GushException::Generic) {
-		parent::__construct($message, $code);
-	}
+    const Auth = 2;
+    const Data = 1;
+    const Generic = 0;
+    
+    public function __construct($message, $code = GushException::Generic) {
+        parent::__construct($message, $code);
+    }
 }
 
 class GushOutput {}
@@ -65,10 +65,10 @@ function loadEngine($engine) {
 
 
 try {
-	if(!array_key_exists('p', $_POST) || $_POST['p'] != $passcode) {
-		throw new GushException('I don\'t know who you are.', GushException::Auth);
-	}
-	
+    if(!array_key_exists('p', $_POST) || $_POST['p'] != $passcode) {
+        throw new GushException('I don\'t know who you are.', GushException::Auth);
+    }
+    
     $action = 'auth';
     if(array_key_exists('a', $_POST)) $action = $_POST['a'];
     
@@ -91,12 +91,12 @@ try {
             $output = new stdClass();
             $output->auth = 1;
             break;
-	}
+    }
 } catch (Exception $e) {
-	$output = new GushOutput();
-	$output->error = new stdClass();
-	$output->error->code = $e->getCode();
-	$output->error->message = $e->getMessage();
+    $output = new GushOutput();
+    $output->error = new stdClass();
+    $output->error->code = $e->getCode();
+    $output->error->message = $e->getMessage();
 }
 
 header('Content-type: application/json');
