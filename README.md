@@ -23,20 +23,26 @@ Gush requires the following components to work correctly:
 * Composer
 * PHP 5.3+
 
-To set up a copy of Gush, extract the source code to a directory and run:
+It is advisable to use a **[release](https://github.com/tombazza/gush/releases)** rather than the trunk which may have issues. To set up a copy of Gush, extract the source code to a directory and run:
 
 `$ php composer.phar install`
 
-Next create your password file and store it somewhere outside your web root. It should contain a plain-text password. Edit the `$passcode` variable in `data.php` to point to this text file.
+#### Configuration
 
-Finally you should change the **Zend\Http\Client** adapter settings in `includes/Upstream.php` to point either to a proxy server or to use a different adapter.
+First create your password file and store it somewhere outside your web root. It should contain only a plain-text password.
+
+Next, rename `config.php.dist` to `config.php`. You will need to edit this file to match your local settings.
+
+* **passcode_file**(*string*) - path to the login passcode
+* **adapter_settings**(*array*) - options to be passed to **Zend\Http\Client**
+* **engines**(*array*) - list of content upstream engines found in `includes/Data`
 
 ## License
 This code is released under the GNU General Public License, version 3 (GPL-3.0). Please see the file `LICENSE` for details.
 
     Gush - Aggregating torrent search engine
     Copyright (C) 2013 tombazza
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -51,5 +57,3 @@ This code is released under the GNU General Public License, version 3 (GPL-3.0).
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 [![GPLv3](http://www.gnu.org/graphics/gplv3-88x31.png "GPLv3")](http://www.gnu.org/licenses/gpl-3.0-standalone.html)
-
-
