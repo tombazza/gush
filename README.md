@@ -33,9 +33,9 @@ First create your password file and store it somewhere outside your web root. It
 
 Next, rename `config.php.dist` to `config.php`. You will need to edit this file to match your local settings.
 
-* **passcode_file**(*string*) - path to the login passcode
-* **adapter_settings**(*array*) - options to be passed to **Zend\Http\Client**
-* **engines**(*array*) - list of content upstream engines found in `includes/Data`
+* **passcode_file** (string) - path to the login passcode
+* **adapter_settings** (array) - options to be passed to **Zend\Http\Client**
+* **engines** (array) - list of content upstream engines found in `includes/Data`
 
 ## License
 This code is released under the GNU General Public License, version 3 (GPL-3.0). Please see the file `LICENSE` for details.
