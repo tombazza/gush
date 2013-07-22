@@ -50,7 +50,8 @@ class Data_Kat extends DataUpstream {
                 'size' => $this->formatBytes((string) $torrent->contentLength),
                 'hash' => (string) $torrent->infoHash,
                 'magnetParts' => $this->parseMagnetLink($torrent->magnetURI),
-                'metadata' => array('name' => 'Kat', 'id' => str_replace(array('http://kickass.to/', '.html'), '', $item->link))
+                'metadata' => array('name' => 'Kat', 'id' => str_replace(array('http://kickass.to/', '.html'), '', $item->link)),
+                'date' => strtotime($item->pubDate)
             );
         }
         return $data;

@@ -26,8 +26,8 @@ require_once 'vendor/autoload.php';
 require_once 'includes/Upstream.php';
 require_once 'includes/Config.php';
 
-Config::Load(include 'config.php');
-$config = Config::getData();
+GushConfig::Load(include 'config.php');
+$config = GushConfig::getData();
 define('APP_LOCATION', getcwd());
 $passcode = trim(file_get_contents($config['passcode_file']));
 

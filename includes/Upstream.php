@@ -41,7 +41,7 @@ class DataUpstream {
     protected $config;
 
     public function __construct() {
-        $this->config = Config::getData();
+        $this->config = GushConfig::getData();
     }
 
     protected function retreiveData($url, $format = self::FORMAT_PLAIN, $postData = false) {

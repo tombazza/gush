@@ -222,6 +222,15 @@ var $Gush = function ($, $Config) {
 
     }
 
+    function convertDate(date) {
+        var date = new Date(date * 1000);
+        var day = date.getDate();
+        var month = (date.getMonth() + 1);
+        if(day < 10) day = '0' + day;
+        if(month < 10) month = '0' + month;
+        return day + '/' + month + '/' + date.getFullYear();
+    }
+    
     function searchResponse(data) {
         logData(data);
         loading--;
@@ -234,12 +243,19 @@ var $Gush = function ($, $Config) {
                 sTitle: 'Name',
                 sWidth: '70%'
             }, {
+                sTitle: 'Date',
+                iDataSort: 6
+            }, {
                 sTitle: 'Size',
                 sType: 'file-size'
             }, {
                 sTitle: 'Seeds'
             }, {
                 sTitle: 'Peers'
+            }, {
+                bVisible: false
+            }, {
+                bVisible:false
             }]
         };
         $.each(data, function (key, item) {
@@ -249,10 +265,12 @@ var $Gush = function ($, $Config) {
                 resultsIndex[hash].metadata = [item.metadata];
                 tableData.aaData.push([
                     item.name,
+                    convertDate(item.date),
                     item.size,
                     item.seeds,
                     item.peers,
-                    hash
+                    hash,
+                    item.date
                 ]);
             } else {
                 // add trackers to list
@@ -272,14 +290,14 @@ var $Gush = function ($, $Config) {
             searchTable.fnAddData(tableData.aaData);
         }
         searchTable.fnSort([
-            [2, 'desc']
+            [3, 'desc']
         ]);
         $('#results tbody tr').unbind('click');
         $('#results tbody tr').bind('click', function () {
             if (searchTable.fnIsOpen(this)) {
                 searchTable.fnClose(this);
             } else {
-                var info = searchTable.fnGetData(this)[4];
+                var info = searchTable.fnGetData(this)[5];
                 searchTable.fnClose(openRow);
                 searchTable.fnOpen(this, drawInfoRow(info), "info_row");
                 openRow = this;

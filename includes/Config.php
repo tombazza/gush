@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-class Config {
+class GushConfig {
     
     private static $instance;
     private static $data;
@@ -29,8 +29,8 @@ class Config {
     }
     
     public static function Load($data = null) {
-        if(!(self::$instance instanceof Config)) {
-            self::$instance = new Config($data);
+        if(!(self::$instance instanceof GushConfig)) {
+            self::$instance = new GushConfig($data);
         }
     }
     
