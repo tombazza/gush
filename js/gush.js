@@ -26,6 +26,7 @@ var $Gush = function ($, $Config) {
     var searchTable = false,
         openRow = false,
         infoRow = false,
+        searchBox = false,
         resultsIndex = [],
         loading = 0,
         error = false,
@@ -33,10 +34,16 @@ var $Gush = function ($, $Config) {
         requests = [];
 
     function init() {
-        $('#query').keydown(formSubmit);
-        $('#query').focus(formFocus);
-        $('#query').blur(formBlur);
+        searchBox = $('#query');
+        searchBox.keydown(formSubmit);
+        searchBox.focus(formFocus);
+        searchBox.blur(formBlur);
         infoRow = $('.info_content').clone();
+        connectionManager.setLoadingCallback(function() {
+            searchBox.addClass('loading');
+        }, function() {
+            searchBox.removeClass('loading');
+        });
     }
 
     function formFocus(e) {
@@ -54,7 +61,6 @@ var $Gush = function ($, $Config) {
     function formSubmit(e) {
         if (e.which == 13) {
             if (!connectionManager.hasAuth()) {
-                $(this).addClass('loading');
                 connectionManager.performLogin($(this).val(), postAuth);
             } else {
                 performSearch();
@@ -69,14 +75,22 @@ var $Gush = function ($, $Config) {
         if (searchTable) searchTable.fnClearTable();
         resultsIndex = [];
         var query = $('#query').val();
-        $('#query').addClass('loading');
         connectionManager.submitSearch(query, searchResponse);
     }
 
     var connectionManager = function () {
-        var requests = [],
+        var requests = {},
             passcode = '',
-            authenticated = false;
+            loading = false,
+            authenticated = false,
+            startLoadCallback = null,
+            endLoadCallback = null,
+            requestCounter = 0;
+    
+        function setLoadingCallback(loadingStart, loadingEnd) {
+            startLoadCallback = loadingStart;
+            endLoadCallback = loadingEnd;
+        }
 
         function performLogin(code, callback) {
             passcode = $.trim(code);
@@ -109,7 +123,12 @@ var $Gush = function ($, $Config) {
         }
 
         function loadData(post, callback) {
-            var requestId = requests.length + 1;
+            if(!loading) {
+                loading = true;
+                startLoadCallback();
+            }
+            requestCounter++;
+            var requestId = requestCounter;
             requests[requestId] = $.ajax({
                 type: "POST",
                 url: $Config.dataEndpoint,
@@ -129,9 +148,24 @@ var $Gush = function ($, $Config) {
             });
         }
 
+        function getRequestsSize() {
+            var size = 0;
+            for(var i in requests) {
+                if(requests.hasOwnProperty(i)) size++;
+            }
+            return size;
+        }
+        
         function deleteRequest(requestId) {
-            var position = $.inArray(requestId, requests);
-            if (~position) requests.splice(position, 1);
+            for(var key in requests) {
+                if(requests.hasOwnProperty(key) && key == requestId) {
+                    delete requests[key];
+                }
+            }
+            if(getRequestsSize() == 0) {
+                loading = false;
+                endLoadCallback();
+            }
         }
 
         function checkErrorState(data) {
@@ -164,7 +198,8 @@ var $Gush = function ($, $Config) {
             submitSearch: submitSearch,
             stopAll: terminateRequests,
             getMeta: getMetadata,
-            hasAuth: getAuthenticated
+            hasAuth: getAuthenticated,
+            setLoadingCallback: setLoadingCallback
         };
     }();
 
@@ -177,7 +212,7 @@ var $Gush = function ($, $Config) {
 
     function postAuth() {
         $('body').removeClass('load');
-        $('#query').removeClass('loading').attr('type', 'text').val('');
+        $('#query').attr('type', 'text').val('');
         yepnope({
             load: {
                 'dtCss': '//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/css/jquery.dataTables.css',
@@ -215,8 +250,6 @@ var $Gush = function ($, $Config) {
             setTimeout(function () {
                 window.location = window.location;
             }, 3000);
-        } else {
-            query.removeClass('loading');
         }
         error = true;
 
