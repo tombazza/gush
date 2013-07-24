@@ -19,15 +19,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-ini_set('display_errors', 'on');
-error_reporting(E_ALL);
-
 require_once 'vendor/autoload.php';
 require_once 'includes/Upstream.php';
 require_once 'includes/Config.php';
 
 GushConfig::Load(include 'config.php');
 $config = GushConfig::getData();
+
+if($config['show_errors']) {
+    ini_set('display_errors', 'on');
+    error_reporting(E_ALL);
+} else {
+    ini_set('display_errors', 'off');
+    error_reporting(0);
+}
+
 define('APP_LOCATION', getcwd());
 $passcode = trim(file_get_contents($config['passcode_file']));
 

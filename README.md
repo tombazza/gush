@@ -36,6 +36,7 @@ Next, rename `config.php.dist` to `config.php`. You will need to edit this file 
 * **passcode_file** (string) - path to the login passcode
 * **adapter_settings** (array) - options to be passed to **Zend\Http\Client**
 * **engines** (array) - list of content upstream engines found in `includes/Data`
+* **show_errors** (boolean) - enable or disable showing of errors from PHP (does not silence exceptions)
 
 ## License
 This code is released under the GNU General Public License, version 3 (GPL-3.0). Please see the file `LICENSE` for details.
