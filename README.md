@@ -2,16 +2,6 @@ Gush
 ====
 Gush is an experimental torrent search engine that aggregates results from multiple different systems into one interface. It is designed to take search results from multiple torrent indexes, merge duplicate torrent's trackers and deliver everything asynchronously to a JavaScript powered interface.
 
-Gush is built using the following libraries and software:
-
-* [PHP](http://www.php.net)
-* [Zend Framework 2](http://framework.zend.com)
-* [Composer](http://getcomposer.org/)
-* [yepnope.js](http://yepnopejs.com/)
-* [jQuery](http://www.jquery.com)
-* [jQuery.DataTables](http://www.datatables.net/)
-* [moment.js](http://momentjs.com/)
-
 #### Disclaimer
 **This software is not built to aid copyright infringement**. It is designed purely as an experiment into the retrieval of information from multiple different sources. Please **do not** use this software for any activity that may be illegal.
 
