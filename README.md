@@ -10,6 +10,7 @@ Gush is built using the following libraries and software:
 * [yepnope.js](http://yepnopejs.com/)
 * [jQuery](http://www.jquery.com)
 * [jQuery.DataTables](http://www.datatables.net/)
+* [moment.js](http://momentjs.com/)
 
 #### DISCLAIMER:
 This system **is not designed to aid copyright infringement**. It is designed purely as an experiment to test the retrieval of information from multiple differently constructed sources. Please be sensible and **do not** use this software for any illegal activities.

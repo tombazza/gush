@@ -217,14 +217,14 @@ var $Gush = function ($, $Config) {
      * Executed in the event of a successful authentication
      * @returns null
      */
-
     function postAuth() {
         $('body').removeClass('load');
         $('#query').attr('type', 'text').val('');
         yepnope({
             load: {
                 'dtCss': '//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/css/jquery.dataTables.css',
-                'dtJs': '//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js'
+                'dtJs': '//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js',
+                'moment': '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js'
             },
             callback: {
                 'dtJs': function (url, result, key) {
@@ -261,19 +261,9 @@ var $Gush = function ($, $Config) {
         error = true;
 
     }
-
-    function convertDate(date) {
-        var date = new Date(date * 1000);
-        var day = date.getDate();
-        var month = (date.getMonth() + 1);
-        if(day < 10) day = '0' + day;
-        if(month < 10) month = '0' + month;
-        return day + '/' + month + '/' + date.getFullYear();
-    }
     
     function searchResponse(data) {
         logData(data);
-        loading--;
         var tableData = {
             bPaginate: false,
             bFilter: false,
@@ -305,7 +295,7 @@ var $Gush = function ($, $Config) {
                 resultsIndex[hash].metadata = [item.metadata];
                 tableData.aaData.push([
                     item.name,
-                    convertDate(item.date),
+                    moment.unix(item.date).format('D MMM YYYY HH:mm'),
                     item.size,
                     item.seeds,
                     item.peers,
@@ -319,7 +309,6 @@ var $Gush = function ($, $Config) {
                 resultsIndex[hash].metadata.push(item.metadata);
             }
         });
-        if (loading == 0) $('#query').removeClass('loading');
         initTable(tableData);
     }
 
