@@ -12,10 +12,10 @@ Gush is built using the following libraries and software:
 * [jQuery.DataTables](http://www.datatables.net/)
 * [moment.js](http://momentjs.com/)
 
-#### DISCLAIMER:
-This system **is not designed to aid copyright infringement**. It is designed purely as an experiment to test the retrieval of information from multiple differently constructed sources. Please be sensible and **do not** use this software for any illegal activities.
+#### Disclaimer
+**This software is not built to aid copyright infringement**. It is designed purely as an experiment into the retrieval of information from multiple different sources. Please **do not** use this software for any activity that may be illegal.
 
-Included with this package are several data sources for third party websites. These files are intended as examples of how the system works and are not officially supported or endorsed by the websites they connect to. Their use may be against the terms of use of the websites they represent.
+Included with Gush are several data sources for third party websites. These files are intended as examples of how the software works and are not officially supported or endorsed by the websites they connect to. As such, their use may be against the terms of service of the websites they represent.
 
 ## Installation
 
