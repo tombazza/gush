@@ -90,10 +90,14 @@ var $Gush = function ($, $Config) {
                 requestCount = 0,
                 requestBuffer = {};
             
-            function size() {
+            function checkSize() {
                 var size = 0;
                 for(var i in activeRequests) {
                     if(activeRequests.hasOwnProperty(i)) size++;
+                }
+                if(loading && size == 0) {
+                    loading = false;
+                    endCallback();
                 }
                 return size;
             }
@@ -128,16 +132,14 @@ var $Gush = function ($, $Config) {
                         }
                     });
                 } else {
+                    checkSize();
                     callback(requestBuffer[requestString]);
                 }
             }
             
             function remove(requestId) {
                 if(inObject(requestId, activeRequests)) delete activeRequests[requestId];
-                if(size() == 0) {
-                    loading = false;
-                    endCallback();
-                }
+                checkSize();
             }
             
             function terminateRequests() {
