@@ -384,9 +384,7 @@ var $Gush = function ($, $Config) {
         }
         if (data.comments) {
             commentsPage = infoRow.find('#comments-page');
-            commentCount = infoRow.find('#comments-tab a').html().match(/\d+\.?\d*/g);
-            logData(commentCount);
-            if (!commentCount) commentCount = 0;
+            commentCount = infoRow.find('#comments-page div').length;
             var commentsHtml = commentsPage.html();
             for (i = 0; i < data.comments.length; i++) {
                 comment = $.trim(data.comments[i]);
