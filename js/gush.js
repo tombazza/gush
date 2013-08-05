@@ -87,7 +87,8 @@ var $Gush = function ($, $Config) {
         function requestManager(startCallback, endCallback) {
             var activeRequests = {},
                 loading = false,
-                requestCount = 0;
+                requestCount = 0,
+                requestBuffer = {};
             
             function size() {
                 var size = 0;
@@ -104,31 +105,35 @@ var $Gush = function ($, $Config) {
                 }
                 requestCount = requestCount + 1;
                 var requestId = requestCount;
-                activeRequests[requestId] = $.ajax({
-                    type: "POST",
-                    url: $Config.dataEndpoint,
-                    data: post,
-                    dataType: 'json',
-                    success: function (data) {
-                        remove(requestId);
-                        if (checkErrorState(data)) callback(data);
-                    },
-                    error: function (xhr, status, error) {
-                        remove(requestId);
-                        displayError({
-                            message: 'Request failed',
-                            code: 1
-                        });
-                    }
-                });
+                var requestString = JSON.stringify(post);
+                if(!inObject(requestString, requestBuffer)) {
+                    activeRequests[requestId] = $.ajax({
+                        type: "POST",
+                        url: $Config.dataEndpoint,
+                        data: post,
+                        dataType: 'json',
+                        success: function (data) {
+                            remove(requestId);
+                            if (checkErrorState(data)) {
+                                requestBuffer[requestString] = data;
+                                callback(data);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            remove(requestId);
+                            displayError({
+                                message: 'Request failed',
+                                code: 1
+                            });
+                        }
+                    });
+                } else {
+                    callback(requestBuffer[requestString]);
+                }
             }
             
             function remove(requestId) {
-                for(var key in activeRequests) {
-                    if(activeRequests.hasOwnProperty(key) && key == requestId) {
-                        delete activeRequests[key];
-                    }
-                }
+                if(inObject(requestId, activeRequests)) delete activeRequests[requestId];
                 if(size() == 0) {
                     loading = false;
                     endCallback();
@@ -396,6 +401,13 @@ var $Gush = function ($, $Config) {
     
     function logData(data) {
         window.console && console.log(data);
+    }
+    
+    function inObject(needle, haystack) {
+        for(var key in haystack) {
+            if(haystack.hasOwnProperty(key) && key == needle) return true;
+        }
+        return false;
     }
 
     var contract = {
