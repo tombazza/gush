@@ -28,10 +28,8 @@ var $Gush = function ($, $Config) {
         infoRow = false,
         searchBox = false,
         resultsIndex = [],
-        loading = 0,
         error = false,
-        errorTypes = ['Generic', 'Data', 'Auth'],
-        requests = [];
+        errorTypes = ['Generic', 'Data', 'Auth'];
 
     function init() {
         searchBox = $('#query');
@@ -44,6 +42,7 @@ var $Gush = function ($, $Config) {
         }, function() {
             searchBox.removeClass('loading');
         });
+        connectionManager.init();
     }
 
     function formFocus(e) {
@@ -79,32 +78,108 @@ var $Gush = function ($, $Config) {
     }
 
     var connectionManager = function () {
-        var requests = {},
-            passcode = '',
-            loading = false,
+        var passcode = '',
             authenticated = false,
             startLoadCallback = null,
             endLoadCallback = null,
-            requestCounter = 0;
+            requests = null;
     
+        function requestManager(startCallback, endCallback) {
+            var activeRequests = {},
+                loading = false,
+                requestCount = 0;
+            
+            function size() {
+                var size = 0;
+                for(var i in activeRequests) {
+                    if(activeRequests.hasOwnProperty(i)) size++;
+                }
+                return size;
+            }
+            
+            function add(post, callback) {
+                if(!loading) {
+                    loading = true;
+                    startCallback();
+                }
+                requestCount = requestCount + 1;
+                var requestId = requestCount;
+                activeRequests[requestId] = $.ajax({
+                    type: "POST",
+                    url: $Config.dataEndpoint,
+                    data: post,
+                    dataType: 'json',
+                    success: function (data) {
+                        remove(requestId);
+                        if (checkErrorState(data)) callback(data);
+                    },
+                    error: function (xhr, status, error) {
+                        remove(requestId);
+                        displayError({
+                            message: 'Request failed',
+                            code: 1
+                        });
+                    }
+                });
+            }
+            
+            function remove(requestId) {
+                for(var key in activeRequests) {
+                    if(activeRequests.hasOwnProperty(key) && key == requestId) {
+                        delete activeRequests[key];
+                    }
+                }
+                if(size() == 0) {
+                    loading = false;
+                    endCallback();
+                }
+            }
+            
+            function terminateRequests() {
+                $.each(activeRequests, function (id, xhr) {
+                    if (xhr) xhr.abort();
+                });
+            }
+            
+            function checkErrorState(data) {
+                if (data.error) {
+                    if(data.error.code == 2) terminateRequests();
+                    displayError(data.error);
+                    return false;
+                }
+                return true;
+            }
+            
+            return {
+                add: add
+            };
+        }
+        
         function setLoadingCallback(loadingStart, loadingEnd) {
             startLoadCallback = loadingStart;
             endLoadCallback = loadingEnd;
         }
+        
+        function init() {
+            requests = requestManager(startLoadCallback, endLoadCallback);
+        }
 
         function performLogin(code, callback) {
             passcode = $.trim(code);
-            loadData({
+            requests.add({
                 a: 'auth',
                 p: passcode
             }, function (data) {
-                handleAuthResponse(data, callback);
+                if (data.auth) {
+                    authenticated = true;
+                    callback();
+                }
             });
         }
 
         function submitSearch(query, callback) {
             for (i = 0; i < $Config.numberEngines; i++) {
-                loadData({
+                requests.add({
                     a: 'search',
                     e: i,
                     q: query,
@@ -114,7 +189,7 @@ var $Gush = function ($, $Config) {
         }
 
         function getMetadata(id, engine, callback) {
-            loadData({
+            requests.add({
                 a: 'metadata',
                 e: engine,
                 i: id,
@@ -122,84 +197,17 @@ var $Gush = function ($, $Config) {
             }, callback);
         }
 
-        function loadData(post, callback) {
-            if(!loading) {
-                loading = true;
-                startLoadCallback();
-            }
-            requestCounter++;
-            var requestId = requestCounter;
-            requests[requestId] = $.ajax({
-                type: "POST",
-                url: $Config.dataEndpoint,
-                data: post,
-                dataType: 'json',
-                success: function (data) {
-                    deleteRequest(requestId);
-                    if (checkErrorState(data)) callback(data);
-                },
-                error: function (xhr, status, error) {
-                    deleteRequest(requestId);
-                    displayError({
-                        message: 'Request failed',
-                        code: 1
-                    });
-                }
-            });
-        }
-
-        function getRequestsSize() {
-            var size = 0;
-            for(var i in requests) {
-                if(requests.hasOwnProperty(i)) size++;
-            }
-            return size;
-        }
-        
-        function deleteRequest(requestId) {
-            for(var key in requests) {
-                if(requests.hasOwnProperty(key) && key == requestId) {
-                    delete requests[key];
-                }
-            }
-            if(getRequestsSize() == 0) {
-                loading = false;
-                endLoadCallback();
-            }
-        }
-
-        function checkErrorState(data) {
-            if (data.error) {
-                displayError(data.error);
-                return false;
-            }
-            return true;
-        }
-
-        function handleAuthResponse(data, callback) {
-            if (data.auth) {
-                authenticated = true;
-                callback();
-            }
-        }
-
-        function terminateRequests() {
-            $.each(requests, function (id, xhr) {
-                if (xhr) xhr.abort();
-            });
-        }
-
         function getAuthenticated() {
             return authenticated;
         }
 
         return {
+            init: init,
+            setLoadingCallback: setLoadingCallback,
             performLogin: performLogin,
             submitSearch: submitSearch,
-            stopAll: terminateRequests,
-            getMeta: getMetadata,
             hasAuth: getAuthenticated,
-            setLoadingCallback: setLoadingCallback
+            getMeta: getMetadata
         };
     }();
 
@@ -246,7 +254,6 @@ var $Gush = function ($, $Config) {
 
         if (response.code == 2) {
             query.attr('disabled', 'disabled').blur();
-            connectionManager.stopAll();
             setTimeout(function () {
                 window.location = window.location;
             }, 3000);
