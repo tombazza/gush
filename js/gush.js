@@ -99,7 +99,6 @@ var $Gush = function ($, $Config) {
                     loading = false;
                     endCallback();
                 }
-                return size;
             }
             
             function add(post, callback) {
