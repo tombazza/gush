@@ -75,23 +75,39 @@ class Data_Piratebay extends DataUpstream {
                 $itemData['comments'] = preg_replace("/[^0-9]/","", $this->getAttributeFromHTML($item[3], 'img', 'alt'));
             }
             $itemData['metadata'] = array('name' => 'Piratebay', 'id' => $infoLinkParts[2]);
-            $dateRow = $item[5];
-            if(stripos($item[5], '11x11p') || stripos($item[5], 'vip.gif') || stripos($item[5], 'trusted.png')) $dateRow = $item[6];
-            $dateParts = explode(',', $dateRow);
-            $recordDate = str_replace(array('<font class="detDesc">Uploaded ', '&nbsp;'), array('', '-'), $dateParts[0]);
-            $finalDateParts = explode('-', $recordDate);
-            if(stripos($recordDate, ':')) {
-                // without year means this year
-                $timeParts = explode(':', $finalDateParts[2]);
-                $dateOutput = mktime($timeParts[0],$timeParts[1],0,$finalDateParts[0], $finalDateParts[1], date('y'));
-            } else {
-                // previous year
-                $dateOutput = mktime(0,0,0,$finalDateParts[0], $finalDateParts[1], $finalDateParts[2]);
+            
+            $dateOutput = 0;
+            foreach($item as $rowId => $possibleDateRow) {
+                if(stripos($possibleDateRow, 'Uploaded')) {
+                    $dateOutput = $this->parseDateRow($item[$rowId]);
+                    break;
+                }
             }
             $itemData['date'] = $dateOutput;
             $data[] = $itemData;
         }
         return $data;
+    }
+    
+    private function parseDateRow($dateRow) {
+        $dateParts = explode(',', $dateRow);
+        $recordDate = str_replace(array('<font class="detDesc">Uploaded ', '&nbsp;'), array('', '-'), $dateParts[0]);
+        $finalDateParts = explode('-', $recordDate);
+        $dateOutput = 0;
+        if(stripos($recordDate, ':')) {
+            // without year means this year
+            if($finalDateParts[0] != 'Today') {
+                $timeParts = explode(':', $finalDateParts[2]);
+                $dateOutput = mktime($timeParts[0],$timeParts[1],0,$finalDateParts[0], $finalDateParts[1], date('y'));
+            } else {
+                $timeParts = explode(':', $finalDateParts[1]);
+                $dateOutput = mktime($timeParts[0],$timeParts[1],0,date('m'), date('d'), date('Y'));
+            }
+        } else {
+            // previous year
+            $dateOutput = mktime(0,0,0,$finalDateParts[0], $finalDateParts[1], $finalDateParts[2]);
+        }
+        return $dateOutput;
     }
     
     public function getTorrentMeta($torrentId) {
@@ -109,12 +125,14 @@ class Data_Piratebay extends DataUpstream {
             'page' => '1'
         );
         $data = $this->retreiveData($url, self::FORMAT_PLAIN, $post);
-        $dom = new Query($data);
-        $results = $dom->execute('div[id*="comment"] .comment');
         $comments = array();
-        foreach($results as $parentElement) {
-            $newHTML = $this->nodeToHTML($parentElement);
-            $comments[] = $this->cleanString($newHTML);
+        if(trim($data)) {
+            $dom = new Query($data);
+            $results = $dom->execute('div[id*="comment"] .comment');
+            foreach($results as $parentElement) {
+                $newHTML = $this->nodeToHTML($parentElement);
+                $comments[] = $this->cleanString($newHTML);
+            }
         }
         return $comments;
     }
