@@ -52,7 +52,7 @@ var $Gush = function ($, $Config) {
     }
 
     function formBlur(e) {
-        if (!connectionManager.hasAuth()) {
+        if (!connectionManager.hasAuth() && !error) {
             $(this).val('').attr('type', 'text').val('passcode?').addClass('passcode');
         }
     }
@@ -253,19 +253,15 @@ var $Gush = function ($, $Config) {
     }
 
     function displayError(response) {
-        var query = $('#query');
-        logData(response);
+        error = true;
         $('body').removeClass('load').addClass('error');
-        query.attr('type', 'text').val('Error: ' + response.message);
-
+        searchBox.attr('type', 'text').val('Error: ' + response.message);
         if (response.code == 2) {
-            query.attr('disabled', 'disabled').blur();
+            searchBox.attr('disabled', 'disabled').blur();
             setTimeout(function () {
                 window.location = window.location;
-            }, 3000);
+            }, 1500);
         }
-        error = true;
-
     }
     
     function searchResponse(data) {
