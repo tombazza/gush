@@ -49,7 +49,3 @@ This code is released under the GNU General Public License, version 3 (GPL-3.0).
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 [![GPLv3](http://www.gnu.org/graphics/gplv3-88x31.png "GPLv3")](http://www.gnu.org/licenses/gpl-3.0-standalone.html)
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/tombazza/gush/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
