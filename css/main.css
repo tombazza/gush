@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* Reset */
 html{color:#000;background:#FFF;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}input,textarea,select{*font-size:100%;}legend{color:#000;}
 
@@ -17,7 +18,7 @@ h1 {
     color: #fff;
     font-family: Lucida Sans Unicode, Lucida Grande, sans-serif;
     background-color: #97cb7e;
-    text-shadow: 0px 0px 10px #468429;
+    text-shadow: 0 0 10px #468429;
     filter: dropshadow(color = #468429, offx = 0, offy = 0);
 }
 
@@ -36,7 +37,7 @@ h1 {
     border-radius: 3px;
 }
 
-#search input.loading {
+#search .loading {
     background-image: url('../images/loading.gif');
     background-repeat: no-repeat;
     background-position: 99%;
@@ -62,26 +63,26 @@ h1 {
     display: block;
 }
 
-table.dataTable td {
+.dataTable td {
     padding-left: 5px !important;
 }
 
-table.datatable tr.odd {
+.dataTable tr.odd {
     background-color: #C5E5B5 !important;
 }
 
-table.datatable tr.odd td.sorting_1,table.datatable tr.odd td.sorting_2,table.datatable tr.odd td.sorting_3
+.dataTable tr.odd td.sorting_1,.dataTable tr.odd td.sorting_2,.dataTable tr.odd td.sorting_3
 {
     background-color: #97CB7E !important;
 }
 
-table.datatable tr.even td.sorting_1,table.datatable tr.even td.sorting_2,table.datatable tr.even td.sorting_3
+.dataTable tr.even td.sorting_1,.dataTable tr.even td.sorting_2,.dataTable tr.even td.sorting_3
 {
     background-color: #B9E5A4 !important;
 }
 
 /* login */
-#search input.passcode {
+#search .passcode {
     color: #808080 !important;
 }
 
@@ -89,14 +90,14 @@ table.datatable tr.even td.sorting_1,table.datatable tr.even td.sorting_2,table.
 body.error h1 {
     border-color: #EDA9B7;
     background-color: #DB8898;
-    text-shadow: 0px 0px 10px #8E2C3F;
+    text-shadow: 0 0 10px #8E2C3F;
     filter: dropshadow(color = #8E2C3F, offx = 0, offy = 0);
 }
 
 body.load h1 {
     border-color: #dbdbdb;
     background-color: #bbbbbb;
-    text-shadow: 0px 0px 10px #616161;
+    text-shadow: 0 0 10px #616161;
     filter: dropshadow(color = #616161, offx = 0, offy = 0);
 }
 
