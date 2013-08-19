@@ -63,22 +63,62 @@ h1 {
     display: block;
 }
 
-.dataTable td {
-    padding-left: 5px !important;
+/* Data Table */
+#results.dataTable td {
+    padding-left: 5px;
 }
 
-.dataTable tr.odd {
-    background-color: #C5E5B5 !important;
+#results.dataTable tr.odd {
+    background-color: #C5E5B5;
 }
 
-.dataTable tr.odd td.sorting_1,.dataTable tr.odd td.sorting_2,.dataTable tr.odd td.sorting_3
-{
-    background-color: #97CB7E !important;
+#results.dataTable tr.odd td.sorting_1,#results.dataTable tr.odd td.sorting_2,#results.dataTable tr.odd td.sorting_3 {
+    background-color: #97CB7E;
 }
 
-.dataTable tr.even td.sorting_1,.dataTable tr.even td.sorting_2,.dataTable tr.even td.sorting_3
-{
-    background-color: #B9E5A4 !important;
+#results.dataTable tr.even td.sorting_1,#results.dataTable tr.even td.sorting_2,#results.dataTable tr.even td.sorting_3 {
+    background-color: #B9E5A4;
+}
+
+/* Table highlight */
+#results.dataTable tbody tr.even:hover, #results.dataTable tbody tr.even td.highlighted {
+	background-color: #ECFFB3;
+}
+
+#results.dataTable.dataTable tbody tr.odd:hover, #results.dataTable tbody tr.odd td.highlighted {
+	background-color: #E6FF99;
+}
+
+#results.dataTable tr.even:hover {
+	background-color: #ECFFB3;
+}
+
+#results.dataTable tr.even:hover td.sorting_1 {
+	background-color: #DDFF75;
+}
+
+#results.dataTable tr.even:hover td.sorting_2 {
+	background-color: #E7FF9E;
+}
+
+#results.dataTable tr.even:hover td.sorting_3 {
+	background-color: #E2FF89;
+}
+
+#results.dataTable tr.odd:hover {
+	background-color: #E6FF99;
+}
+
+#results.dataTable tr.odd:hover td.sorting_1 {
+	background-color: #D6FF5C;
+}
+
+#results.dataTable tr.odd:hover td.sorting_2 {
+	background-color: #E0FF84;
+}
+
+#results.dataTable tr.odd:hover td.sorting_3 {
+	background-color: #DBFF70;
 }
 
 /* login */
