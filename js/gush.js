@@ -299,7 +299,7 @@ var $Gush = function ($, $Config) {
                 resultsIndex[hash].metadata = [item.metadata];
                 tableData.aaData.push([
                     item.name,
-                    moment.unix(item.date).format('D MMM YYYY HH:mm'),
+                    moment.unix(item.date).format('DD MMM YYYY HH:mm'),
                     item.size,
                     item.seeds,
                     item.peers,
