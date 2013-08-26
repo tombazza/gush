@@ -46,24 +46,26 @@ var $Gush = function ($, $Config) {
     }
 
     function formFocus(e) {
+        searchBox.addClass('focus');
         if (!connectionManager.hasAuth()) {
             $(this).removeClass('passcode').val('').attr('type', 'password');
         }
     }
 
     function formBlur(e) {
+        searchBox.removeClass('focus');
         if (!connectionManager.hasAuth() && !error) {
-            $(this).val('').attr('type', 'text').val('passcode?').addClass('passcode');
+            $(this).val('').attr('type', 'text').val('passcode?');
         }
     }
 
     function formSubmit(e) {
-        if (e.which == 13) {
+        if (e.which == 13 && searchBox.val().length > 0) {
             if (!connectionManager.hasAuth()) {
                 connectionManager.performLogin($(this).val(), postAuth);
             } else {
                 performSearch();
-
+                $(this).blur();
             }
         }
     }
@@ -254,8 +256,8 @@ var $Gush = function ($, $Config) {
 
     function displayError(response) {
         error = true;
-        $('body').removeClass('load').addClass('error');
-        searchBox.attr('type', 'text').val('Error: ' + response.message);
+        $('#status').removeClass().addClass('error');
+        $('#status').html('Error: ' + response.message);
         if (response.code == 2) {
             searchBox.attr('disabled', 'disabled').blur();
             setTimeout(function () {
