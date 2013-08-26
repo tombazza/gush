@@ -142,16 +142,9 @@ h1 {
 }
 
 /* alt states */
-body.error h1 {
-    border-color: #EDA9B7;
-    background-color: #DB8898;
-    text-shadow: 0 0 10px #8E2C3F;
-    filter: dropshadow(color = #8E2C3F, offx = 0, offy = 0);
-}
-
 body.load h1 {
-    border-color: #dbdbdb;
-    background-color: #bbbbbb;
+    border-color: #808080;
+    background-color: #333333;
     text-shadow: 0 0 10px #616161;
     filter: dropshadow(color = #616161, offx = 0, offy = 0);
 }
