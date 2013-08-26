@@ -118,6 +118,14 @@ h1 {
     white-space: nowrap;
 }
 
+#results.dataTable th.sorting_desc {
+    background-image: url('../images/sort_desc.png');
+}
+
+#results.dataTable th.sorting_asc {
+    background-image: url('../images/sort_asc.png');
+}
+
 #results.dataTable tr.odd td {
     background-color: #5B474F;
 }
