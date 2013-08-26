@@ -223,6 +223,10 @@ body.load h1 {
     color: #333333;
 }
 
+.info_content .tab-contents * {
+    white-space: normal;
+}
+
 .info_content .tab-shown {
     display: block;
 }
