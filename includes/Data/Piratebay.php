@@ -31,83 +31,32 @@ class Data_Piratebay extends DataUpstream {
     );
 
     public function getData($query, $page = 0) {
-        $url = $this->buildUrl($query, $page);
-        $response = $this->retreiveData($url, self::FORMAT_PLAIN);
-        if(strpos($response, 'No hits.') > 0) return array();
-        return $this->parseResponse($response);
+        $url = 'http://localhost:9001/?engine=piratebay&search=' . urlencode($query);
+        $data = $this->getLocalResponse($url);
+        if(count($data) > 0) {
+            return $this->parseResponse($data);
+        } else {
+            return array();
+        }
     }
 
-    private function parseResponse($html) {
-        $dom = new Query($html);
-        $results = $dom->execute('tr');
-
-        $i = 0;
-        foreach($results as $parentElement) {
-            $newHTML = $this->nodeToHTML($parentElement);
-            $subDom = new Query($newHTML);
-            $subResults = $subDom->execute('td');
-            $parts = array();
-            foreach($subResults as $subResult) {
-                foreach($subResult->childNodes as $childNode) {
-                    $tmpHTML = str_replace(array("\t", "\n"), '', trim($this->nodeToHTML($childNode)));
-                    if($tmpHTML || $tmpHTML === '0') $parts[] = $tmpHTML;
-                }
-            }
-            if(count($parts) && $i) $row[] = $parts;
-            $i++;
-        }
-
-        $data = array();
-        foreach($row as $item) {
-            $infoLinkParts = explode('/', $this->getAttributeFromHTML($item[1], 'a', 'href'));
-            $totalFields = count($item);
+    private function parseResponse($data) {
+        $response = array();
+        foreach($data as $item) {
             $itemData = array();
-            $itemData['name'] = $this->getTextBetweenTags($item[1], 'a');
-            $itemData['magnet'] = $this->getAttributeFromHTML($item[2], 'a', 'href');
-            $itemData['seeds'] = (int) $item[($totalFields - 2)];
-            $itemData['peers'] = (int) $item[($totalFields - 1)];
-            $sizeParts = explode(',', $item[($totalFields - 3)]);
-            $itemData['size'] = $this->convertFileSize($sizeParts[1]);
-            
+            $itemData['name'] = $item->name;
+            $itemData['magnet'] = $item->magnet;
+            $itemData['seeds'] = (int) $item->seeds;
+            $itemData['peers'] = (int) $item->peers;
+            $itemData['size'] = $this->convertFileSize($item->size);
             $itemData['hash'] = $this->magnetToHash($itemData['magnet']);
             $itemData['magnetParts'] = $this->parseMagnetLink($itemData['magnet']);
-            if(stripos($item[3], 'comment')) {
-                $itemData['comments'] = preg_replace("/[^0-9]/","", $this->getAttributeFromHTML($item[3], 'img', 'alt'));
-            }
-            $itemData['metadata'] = array('name' => 'Piratebay', 'id' => $infoLinkParts[2]);
-            
-            $dateOutput = 0;
-            foreach($item as $rowId => $possibleDateRow) {
-                if(stripos($possibleDateRow, 'Uploaded')) {
-                    $dateOutput = $this->parseDateRow($item[$rowId]);
-                    break;
-                }
-            }
-            $itemData['date'] = $dateOutput;
-            $data[] = $itemData;
+            $itemData['comments'] = $item->comments;
+            $itemData['metadata'] = array('name' => 'Piratebay', 'id' => $item->id);
+            $itemData['date'] = $item->date;
+            $response[] = $itemData;
         }
-        return $data;
-    }
-    
-    private function parseDateRow($dateRow) {
-        $dateParts = explode(',', $dateRow);
-        $recordDate = str_replace(array('<font class="detDesc">Uploaded ', '&nbsp;'), array('', '-'), $dateParts[0]);
-        $finalDateParts = explode('-', $recordDate);
-        $dateOutput = 0;
-        if(stripos($recordDate, ':')) {
-            // without year means this year
-            if($finalDateParts[0] != 'Today') {
-                $timeParts = explode(':', $finalDateParts[2]);
-                $dateOutput = mktime($timeParts[0],$timeParts[1],0,$finalDateParts[0], $finalDateParts[1], date('y'));
-            } else {
-                $timeParts = explode(':', $finalDateParts[1]);
-                $dateOutput = mktime($timeParts[0],$timeParts[1],0,date('m'), date('d'), date('Y'));
-            }
-        } else {
-            // previous year
-            $dateOutput = mktime(0,0,0,$finalDateParts[0], $finalDateParts[1], $finalDateParts[2]);
-        }
-        return $dateOutput;
+        return $response;
     }
     
     public function getTorrentMeta($torrentId) {

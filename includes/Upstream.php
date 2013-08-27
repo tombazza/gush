@@ -76,6 +76,29 @@ class DataUpstream {
             return false;
         }
     }
+    
+    protected function getLocalResponse($url) {
+        try {
+            $client = new Client($url, array(
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_MAXREDIRS => 5,
+                CURLOPT_TIMEOUT => 5
+            ));
+            $request = new Request();
+            $request->setUri($url);
+            $client->setRequest($request);
+            $response = $client->dispatch($request);
+            if($response->getStatusCode() == 200) {
+                return json_decode($response->getBody());
+            } else {
+                throw new Exception('Source returned code '.$response->getStatusCode());
+            }
+        } catch(Exception $e) {
+            print_r($e);
+            throw new GushException($e->getMessage(), GushException::Data);
+            return false;
+        }
+    }
 
     protected function nodeToHTML($node) {
         $newdoc = new DOMDocument();
