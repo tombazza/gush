@@ -352,6 +352,7 @@ var $Gush = function ($, $Config) {
 
         infoRow.find('#file-page table tbody').html('');
         infoRow.find('#comments-page').html('');
+        infoRow.find('.trackers').html('');
 
         infoRow.find('li a').click(function (e) {
             e.preventDefault();
@@ -363,6 +364,10 @@ var $Gush = function ($, $Config) {
         });
         $.each(row.metadata, function (id, meta) {
             connectionManager.getMeta(meta.id, meta.name, receiveMetaData);
+        });
+        
+        $.each(row.magnetParts.tr, function(id, tracker) {
+            infoRow.find('.trackers').append('<li>' + decodeURIComponent(tracker) + '</li>');
         });
 
         return infoRow;
