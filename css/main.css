@@ -28,6 +28,10 @@ h1 {
     filter: dropshadow(color = #FFFFFF, offx = 0, offy = 0);
 }
 
+#header {
+    overflow: hidden;
+}
+
 #search {
     padding: 10px;
 }
@@ -65,6 +69,8 @@ h1 {
 
 #results_wrapper {
     padding: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #results .info_row {
@@ -89,6 +95,7 @@ h1 {
     line-height: 32px;
     background-position: 5px center;
     background-repeat: no-repeat;
+    cursor: pointer;
 }
 
 #status.error {

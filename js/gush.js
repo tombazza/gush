@@ -29,7 +29,8 @@ var $Gush = function ($, $Config) {
         searchBox = false,
         resultsIndex = [],
         error = false,
-        errorTypes = ['Generic', 'Data', 'Auth'];
+        errorTypes = ['Generic', 'Data', 'Auth'],
+        resultsWrapper = false;
 
     function init() {
         searchBox = $('#query');
@@ -43,8 +44,22 @@ var $Gush = function ($, $Config) {
             searchBox.removeClass('loading');
         });
         connectionManager.init();
+        $(window).resize(sizeResultsArea);
+        $('#status').click(function() {
+           $(this).removeClass('error');
+           sizeResultsArea();
+        });
     }
 
+    function sizeResultsArea() {
+        headerHeight = $('#header').outerHeight();
+        resultsWrapper = $('#results_wrapper');
+        if(resultsWrapper) {
+            var calcHeight = ($(window).height() - headerHeight) - 20;
+            resultsWrapper.css('height', calcHeight + 'px');
+        }
+    }
+    
     function formFocus(e) {
         searchBox.addClass('focus');
         if (!connectionManager.hasAuth()) {
@@ -72,7 +87,7 @@ var $Gush = function ($, $Config) {
 
     function performSearch() {
         error = false;
-        $('body').removeClass('error');
+        $('#status').removeClass('error');
         if (searchTable) searchTable.fnClearTable();
         resultsIndex = [];
         var query = $('#query').val();
@@ -258,6 +273,7 @@ var $Gush = function ($, $Config) {
         error = true;
         $('#status').removeClass().addClass('error');
         $('#status').html('Error: ' + response.message);
+        sizeResultsArea();
         if (response.code == 2) {
             searchBox.attr('disabled', 'disabled').blur();
             setTimeout(function () {
@@ -323,6 +339,7 @@ var $Gush = function ($, $Config) {
         } else {
             searchTable.fnAddData(tableData.aaData);
         }
+        sizeResultsArea();
         searchTable.fnSort([
             [3, 'desc']
         ]);

@@ -9,23 +9,25 @@
         <script type="text/javascript" src="js/gush.js"></script>
     </head>
         <body class="load">
+            <div id="header">
                 <h1>Gush</h1>
                 <div id="search"><input type="text" id="query" name="query" value="passcode?" class="passcode"></div>
                 <div id="status"></div>
-                <table id="results"></table>
-                <div class="info_content">
-                        <ul class="tab-names">
-                                <li id="info-tab" class="selected"><a href="javascript:void(0);">Details</a></li>
-                                <li id="file-tab"><a href="javascript:void(0);">File Listing</a></li>
-                                <li id="comments-tab"><a href="javascript:void(0);">Comments (250)</a></li>
-                        </ul>
-                        <div id="info-page" class="tab-contents tab-shown">
-                                <a href="#" class="magnet">Magnet Link</a>
-                                <p><strong>Trackers:</strong></p>
-                                <ul class="trackers"></ul>
-                        </div>
-                    <div id="file-page" class="tab-contents"><table><thead><tr><th>File</th><th>Size</th></tr></thead><tbody></tbody></table></div>
-                        <div id="comments-page" class="tab-contents"></div>
+            </div>
+            <table id="results"></table>
+            <div class="info_content">
+                <ul class="tab-names">
+                    <li id="info-tab" class="selected"><a href="javascript:void(0);">Details</a></li>
+                    <li id="file-tab"><a href="javascript:void(0);">File Listing</a></li>
+                    <li id="comments-tab"><a href="javascript:void(0);">Comments</a></li>
+                </ul>
+                <div id="info-page" class="tab-contents tab-shown">
+                    <a href="#" class="magnet">Magnet Link</a>
+                    <p><strong>Trackers:</strong></p>
+                    <ul class="trackers"></ul>
                 </div>
+                <div id="file-page" class="tab-contents"><table><thead><tr><th>File</th><th>Size</th></tr></thead><tbody></tbody></table></div>
+                <div id="comments-page" class="tab-contents"></div>
+            </div>
         </body>
 </html>
