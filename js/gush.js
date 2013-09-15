@@ -311,6 +311,7 @@ var $Gush = function ($, $Config) {
                 var trackers = resultsIndex[hash].magnetParts.tr;
                 resultsIndex[hash].magnetParts.tr = trackers.concat(item.magnetParts.tr);
                 resultsIndex[hash].metadata.push(item.metadata);
+                if(typeof (item.comments) !== 'undefined') resultsIndex[hash].comments = (resultsIndex[hash].comments + item.comments);
             }
         });
         initTable(tableData);
