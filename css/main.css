@@ -69,7 +69,7 @@ h1 {
 
 #results_wrapper {
     padding: 10px;
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
 }
 
