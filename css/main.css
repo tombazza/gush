@@ -165,9 +165,21 @@ body.load h1 {
 }
 
 /* info row */
+ul.tab-names {
+    height: 30px;
+    border-bottom: 1px solid #DCDCDC;
+}
 .info_content ul.tab-names li {
     list-style: none;
     float: left;
+    height: 30px;
+    margin-bottom: -1px;
+    border-bottom: 1px solid #DCDCDC;
+    overflow: hidden;
+}
+
+.info_content ul.tab-names li.selected {
+    border-bottom: 1px solid #F0F0F0;
 }
 
 .info_content ul.tab-names li a {
@@ -207,7 +219,7 @@ body.load h1 {
 }
 
 .info_content ul.tab-names li.selected a {
-    background-color: #FFFFFF;
+    background-color: #F0F0F0;;
     border-color: #DCDCDC;
     opacity:1;
     filter:alpha(opacity=100);
@@ -216,6 +228,7 @@ body.load h1 {
 
 .info_content .tab-contents {
     border: 1px solid #DCDCDC;
+    border-top-width: 0;
     clear: both;
     height: 250px;
     overflow: auto;
