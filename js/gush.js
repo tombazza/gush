@@ -55,7 +55,7 @@ var $Gush = function ($, $Config) {
         headerHeight = $('#header').outerHeight();
         resultsWrapper = $('#results_wrapper');
         if(resultsWrapper) {
-            var calcHeight = ($(window).height() - headerHeight) - 20;
+            var calcHeight = ($(window).height() - headerHeight);
             resultsWrapper.css('height', calcHeight + 'px');
         }
     }
