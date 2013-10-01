@@ -272,10 +272,19 @@ a.magnet {
     background-position: 10px;
     text-decoration: none;
     background-color: #97cb7e;
-    color: #333333;
+    color: #0D5722;
     font-weight: bold;
     text-align: center;
     width: 100px;
     border: 2px solid #b9e5a4;
     margin-bottom: 10px;
+    float: right;
+}
+
+#info-page h2 {
+    font-size: 20px;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    font-weight: bold;
+    margin: 5px 0 10px;
 }

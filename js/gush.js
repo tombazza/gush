@@ -49,9 +49,23 @@ var $Gush = function ($, $Config) {
            $(this).removeClass('error');
            sizeResultsArea();
         });
+        jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+            "file-size-pre": function (a) {
+                var x = a.substring(0, a.length - 2);
+                var x_unit = (a.substring(a.length - 2, a.length) == "MB" ? 1000 : (a.substring(a.length - 2, a.length) == "GB" ? 1000000 : 1));
+                return parseInt(x * x_unit, 10);
+            },
+            "file-size-asc": function (a, b) {
+                return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+            },
+            "file-size-desc": function (a, b) {
+                return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+            }
+        });
     }
 
     function sizeResultsArea() {
+        $('#info-page h2').width($(window).width() - 210);
         headerHeight = $('#header').outerHeight();
         resultsWrapper = $('#results_wrapper');
         if(resultsWrapper) {
@@ -234,39 +248,9 @@ var $Gush = function ($, $Config) {
         };
     }();
 
-
-
-    /**
-     * Executed in the event of a successful authentication
-     * @returns null
-     */
     function postAuth() {
         $('body').removeClass('load');
         $('#query').attr('type', 'text').val('');
-        yepnope({
-            load: {
-                'dtCss': '//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/css/jquery.dataTables.css',
-                'dtJs': '//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js',
-                'moment': '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js'
-            },
-            callback: {
-                'dtJs': function (url, result, key) {
-                    jQuery.extend(jQuery.fn.dataTableExt.oSort, {
-                        "file-size-pre": function (a) {
-                            var x = a.substring(0, a.length - 2);
-                            var x_unit = (a.substring(a.length - 2, a.length) == "MB" ? 1000 : (a.substring(a.length - 2, a.length) == "GB" ? 1000000 : 1));
-                            return parseInt(x * x_unit, 10);
-                        },
-                        "file-size-asc": function (a, b) {
-                            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-                        },
-                        "file-size-desc": function (a, b) {
-                            return ((a < b) ? 1 : ((a > b) ? -1 : 0));
-                        }
-                    });
-                }
-            }
-        });
     }
 
     function displayError(response) {
@@ -305,7 +289,7 @@ var $Gush = function ($, $Config) {
             }, {
                 bVisible: false
             }, {
-                bVisible:false
+                bVisible: false
             }]
         };
         $.each(data, function (key, item) {
@@ -313,8 +297,10 @@ var $Gush = function ($, $Config) {
             if (typeof (resultsIndex[hash]) === 'undefined') {
                 resultsIndex[hash] = item;
                 resultsIndex[hash].metadata = [item.metadata];
+				var maxLength = 50;
+				var trimmedName = item.name.length > maxLength ? item.name.substring(0, (maxLength - 3)) + '...' : item.name.substring(0, maxLength);
                 tableData.aaData.push([
-                    item.name,
+                    trimmedName,
                     moment.unix(item.date).format('DD MMM YYYY HH:mm'),
                     item.size,
                     item.seeds,
@@ -371,6 +357,7 @@ var $Gush = function ($, $Config) {
         infoRow.find('#file-page table tbody').html('');
         infoRow.find('#comments-page').html('');
         infoRow.find('.trackers').html('');
+        infoRow.find('h2').html('').html(row.name);
 
         infoRow.find('li a').click(function (e) {
             e.preventDefault();
@@ -387,7 +374,6 @@ var $Gush = function ($, $Config) {
         $.each(row.magnetParts.tr, function(id, tracker) {
             infoRow.find('.trackers').append('<li>' + decodeURIComponent(tracker) + '</li>');
         });
-
         return infoRow;
     }
 
