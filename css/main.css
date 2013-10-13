@@ -277,8 +277,8 @@ a.magnet {
     text-align: center;
     width: 100px;
     border: 2px solid #b9e5a4;
-    margin-bottom: 10px;
-    float: right;
+    float: left;
+    margin: 0 10px 20px 0;
 }
 
 #info-page h2 {
@@ -287,4 +287,8 @@ a.magnet {
     white-space: pre-wrap;
     font-weight: bold;
     margin: 5px 0 10px;
+}
+
+#info-page .title {
+    overflow: hidden;
 }
