@@ -1,0 +1,3 @@
+#!/bin/sh
+
+nohup node ./scrape.js >> output.log 2>> error.log < /dev/null &
