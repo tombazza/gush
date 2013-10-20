@@ -17,7 +17,7 @@ var Scraper = function() {
 
     function handleRequest(request, response) {
         var urlObj = url.parse(request.url, true);
-        if(urlObj.query.engine == 'piratebay') {console.log('hi');
+        if(urlObj.query.engine == 'piratebay') {
             Scraper_Pirate.search(urlObj.query.search, function(data) {
                 sendResponse(response, data);
             });
@@ -64,7 +64,6 @@ var Scraper_Pirate = function(cheerio, request) {
         request.get(options, function (error, response, body) {
             if (error)
                 throw error;
-console.log(response)
             if(body.indexOf('No hits.') == -1) {
                 var $ = cheerio.load(body);
                 $('#searchResult tr').each(function() {
