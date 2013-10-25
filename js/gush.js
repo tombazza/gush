@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 var settings = {
     dataEndpoint: 'data.php',
-    numberEngines: 3
+    numberEngines: 2 
 };
 
 var $Gush = function ($, $Config) {
