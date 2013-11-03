@@ -71,7 +71,6 @@ class DataUpstream {
                 throw new Exception('Source returned code '.$response->getStatusCode());
             }
         } catch(Exception $e) {
-            print_r($e);
             throw new GushException($e->getMessage(), GushException::Data);
             return false;
         }
