@@ -6,7 +6,7 @@
 		}
 	],
 	"require": {
-		"zendframework/zend-dom": "2.0.*",
-		"zendframework/zend-http": "2.0.*"
+		"zendframework/zend-dom": "2.*",
+		"zendframework/zend-http": "2.*"
 	}
 }
