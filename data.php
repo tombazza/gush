@@ -27,11 +27,11 @@ GushConfig::Load(include 'config.php');
 $config = GushConfig::getData();
 
 if($config['show_errors']) {
-    ini_set('display_errors', 'on');
-    error_reporting(E_ALL);
+	ini_set('display_errors', 'on');
+	error_reporting(E_ALL);
 } else {
-    ini_set('display_errors', 'off');
-    error_reporting(0);
+	ini_set('display_errors', 'off');
+	error_reporting(0);
 }
 
 define('APP_LOCATION', getcwd());
@@ -39,20 +39,20 @@ $passcode = trim(file_get_contents($config['passcode_file']));
 
 
 class GushException extends Exception {
-    const Auth = 2;
-    const Data = 1;
-    const Generic = 0;
-    
-    public function __construct($message, $code = GushException::Generic) {
-        parent::__construct($message, $code);
-    }
+	const Auth = 2;
+	const Data = 1;
+	const Generic = 0;
+	
+	public function __construct($message, $code = GushException::Generic) {
+		parent::__construct($message, $code);
+	}
 }
 
 class GushOutput {}
 
 function clean($string) {
-    $string = preg_replace('/[^a-z0-9 -_\(\)]/i', '', $string);
-    return trim(strip_tags($string));
+	$string = preg_replace('/[^a-z0-9 -_\(\)]/i', '', $string);
+	return trim(strip_tags($string));
 }
 
 /**
@@ -61,48 +61,48 @@ function clean($string) {
  * @return DataUpstream
  */
 function loadEngine($engine) {
-    $path = APP_LOCATION . '/includes/Data/' . basename($engine . '.php');
-    if(file_exists($path)) {
-        require_once $path;
-        $name = 'Data_' . $engine;
-        return new $name();
-    } else exit;
+	$path = APP_LOCATION . '/includes/Data/' . basename($engine . '.php');
+	if(file_exists($path)) {
+		require_once $path;
+		$name = 'Data_' . $engine;
+		return new $name();
+	} else exit;
 }
 
 
 try {
-    if(!array_key_exists('p', $_POST) || $_POST['p'] != $passcode) {
-        throw new GushException('I don\'t know who you are.', GushException::Auth);
-    }
-    
-    $action = 'auth';
-    if(array_key_exists('a', $_POST)) $action = $_POST['a'];
-    
-    switch($action) {
-        case 'search':
-            $query = $_POST['q'];
-            $engine = $config['engines'][$_POST['e']];
-            $data = loadEngine($engine);
-            $output = $data->getData($query);
-            break;
-        case 'metadata':
-            $engineId = array_search(clean($_POST['e']), $config['engines']);
-            if($engineId !== false) {
-                $engine = $config['engines'][$engineId];
-                $data = loadEngine($engine);
-                $output = $data->getTorrentMeta($_POST['i']);
-            }
-            break;
-        default:
-            $output = new stdClass();
-            $output->auth = 1;
-            break;
-    }
+	if(!array_key_exists('p', $_POST) || $_POST['p'] != $passcode) {
+		throw new GushException('I don\'t know who you are.', GushException::Auth);
+	}
+	
+	$action = 'auth';
+	if(array_key_exists('a', $_POST)) $action = $_POST['a'];
+	
+	switch($action) {
+		case 'search':
+			$query = $_POST['q'];
+			$engine = $config['engines'][$_POST['e']];
+			$data = loadEngine($engine);
+			$output = $data->getData($query);
+			break;
+		case 'metadata':
+			$engineId = array_search(clean($_POST['e']), $config['engines']);
+			if($engineId !== false) {
+				$engine = $config['engines'][$engineId];
+				$data = loadEngine($engine);
+				$output = $data->getTorrentMeta($_POST['i']);
+			}
+			break;
+		default:
+			$output = new stdClass();
+			$output->auth = 1;
+			break;
+	}
 } catch (Exception $e) {
-    $output = new GushOutput();
-    $output->error = new stdClass();
-    $output->error->code = $e->getCode();
-    $output->error->message = $e->getMessage();
+	$output = new GushOutput();
+	$output->error = new stdClass();
+	$output->error->code = $e->getCode();
+	$output->error->message = $e->getMessage();
 }
 
 header('Content-type: application/json');

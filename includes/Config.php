@@ -20,23 +20,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 class GushConfig {
-    
-    private static $instance;
-    private static $data;
-    
-    private function __construct($data) {
-        self::$data = $data;
-    }
-    
-    public static function Load($data = null) {
-        if(!(self::$instance instanceof GushConfig)) {
-            self::$instance = new GushConfig($data);
-        }
-    }
-    
-    public static function getData() {
-        return self::$data;
-    }
+	
+	private static $instance;
+	private static $data;
+	
+	private function __construct($data) {
+		self::$data = $data;
+	}
+	
+	public static function Load($data = null) {
+		if(!(self::$instance instanceof GushConfig)) {
+			self::$instance = new GushConfig($data);
+		}
+	}
+	
+	public static function getData() {
+		return self::$data;
+	}
 }
 
 ?>
