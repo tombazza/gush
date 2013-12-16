@@ -52,30 +52,28 @@ var Scraper_Pirate = function(cheerio, request) {
 	var resultCallback = null,
 		responseSet = [];
 
-	function getSearchResults(query, callback) {
-		responseSet = [];
-		resultCallback = callback;
-		var options = {
-			url: 'http://thepiratebay.sx/search/' + encodeURIComponent(query) + '/0/7/0',
-			headers: {
-				'User-Agent': 'Mozilla/5.0 (MSIE 9.0; Windows NT 6.1; Trident/5.0)'
-			}
-		};
-		request.get(options, function (error, response, body) {
-			if (error)
-				throw error;
-			if(body.indexOf('No hits.') == -1) {
-				var $ = cheerio.load(body);
-				$('#searchResult tr').each(function() {
-					parseRow(this, $);
-				});
-			}
-			callback(responseSet);
-		});
-	}
-	
-	
-
+    function getSearchResults(query, callback) {
+        responseSet = [];
+        resultCallback = callback;
+        var options = {
+            url: 'http://thepiratebay.pe/search/' + encodeURIComponent(query) + '/0/7/0',
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (MSIE 9.0; Windows NT 6.1; Trident/5.0)'
+            }
+        };
+        request.get(options, function (error, response, body) {
+            if (error)
+                throw error;
+            if(body.indexOf('No hits.') == -1) {
+                var $ = cheerio.load(body);
+                $('#searchResult tr').each(function() {
+                    parseRow(this, $);
+                });
+            }
+            callback(responseSet);
+        });
+    }
+    
 	function parseRow(row, $) {
 		var result = $(row);
 		if (!result.hasClass('header')) {
