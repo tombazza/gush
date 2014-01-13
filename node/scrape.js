@@ -56,7 +56,7 @@ var Scraper_Pirate = function(cheerio, request) {
         responseSet = [];
         resultCallback = callback;
         var options = {
-            url: 'http://thepiratebay.pe/search/' + encodeURIComponent(query) + '/0/7/0',
+            url: 'http://thepiratebay.se/search/' + encodeURIComponent(query) + '/0/7/0',
             headers: {
                 'User-Agent': 'Mozilla/5.0 (MSIE 9.0; Windows NT 6.1; Trident/5.0)'
             }

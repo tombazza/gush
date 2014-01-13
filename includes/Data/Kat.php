@@ -119,7 +119,7 @@ class Data_Kat extends DataUpstream {
 		$urlData['field'] = $this->sortFields[$sortField];
 		$urlData['sorder'] = ($sortOrder ? 'asc' : 'desc');
 
-		$url = 'http://kickass.to/usearch/' . urlencode($query) . '/' . $page . '/?' . http_build_query($urlData);
+		$url = 'https://kickass.to/usearch/' . urlencode($query) . '/' . $page . '/?' . http_build_query($urlData);
 		return $url;
 	}
 
