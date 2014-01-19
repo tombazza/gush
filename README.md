@@ -1,13 +1,15 @@
-Gush
-====
-Gush is an experimental torrent search engine that aggregates results from multiple different systems into one interface. It is designed to take search results from multiple torrent indexes, merge duplicate torrent's trackers and deliver everything asynchronously to a JavaScript powered interface.
+## Gush
+
+Gush is an experiment to give a simple interface for a complex problem: locating torrents across multiple different data sets. The data sets accessed could be disparate or the interfaces too cluttered and slow. Gush is the answer to this. 
+
+Using a client based JavaScript approach, Gush connects to a backend API which provides data from upstream sources. The data is then returned and aggregated inside the client application.
 
 #### Disclaimer
-**This software is not built to aid copyright infringement**. It is designed purely as an experiment into the retrieval of information from multiple different sources. Please **do not** use this software for any activity that may be illegal.
+Some of the upstream modules included for Gush may access sites that are blocked in certain countries. This system is not designed to aid in access to any content that is copyrighted or illegal.
 
-Included with Gush are several data sources for third party websites. These files are intended as examples of how the software works and are not officially supported or endorsed by the websites they connect to. As such, their use may be against the terms of service of the websites they represent.
+Further, the data sources that are included are left purely as examples of an upstream implementation. They are not officially supported or endorsed by the websites they connect to. As such, their use may be against the terms of service of the systems they represent.
 
-## Installation
+### Installation
 
 Gush requires the following components to work correctly:
 
@@ -36,7 +38,7 @@ Next, rename `config.php.dist` to `config.php`. You will need to edit this file 
 * **engines** (array) - list of content upstream engines found in `includes/Data`
 * **show_errors** (boolean) - enable or disable showing of errors from PHP (does not silence exceptions)
 
-## License
+### License
 This code is released under the GNU General Public License, version 3 (GPL-3.0). Please see the file `LICENSE` for details.
 
     Gush - Aggregating torrent search engine
