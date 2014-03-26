@@ -27,6 +27,8 @@ Next, change to the `node` directory and install the node packages required:
 
 To run the node service using nohup run `npm start` in the `node` directory, or use your favourite node daemonizing tool.
 
+Finally, set your web server to point to the `webroot` directory to access the application.
+
 #### Configuration
 
 First create your password file and store it somewhere outside your web root. It should contain only a plain-text password.

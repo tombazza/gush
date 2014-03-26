@@ -19,11 +19,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-require_once 'vendor/autoload.php';
-require_once 'includes/Upstream.php';
-require_once 'includes/Config.php';
+define('APP_LOCATION', dirname(getcwd()));
 
-GushConfig::Load(include 'config.php');
+require_once APP_LOCATION . '/vendor/autoload.php';
+require_once APP_LOCATION . '/includes/Upstream.php';
+require_once APP_LOCATION . '/includes/Config.php';
+
+GushConfig::Load(include APP_LOCATION . '/config.php');
 $config = GushConfig::getData();
 
 if($config['show_errors']) {
@@ -34,7 +36,6 @@ if($config['show_errors']) {
 	error_reporting(0);
 }
 
-define('APP_LOCATION', getcwd());
 $passcode = trim(file_get_contents($config['passcode_file']));
 
 

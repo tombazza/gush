@@ -14,6 +14,5 @@ pids
 logs
 results
 node_modules
-
+nbproject
 npm-debug.log
-/nbproject/private/
