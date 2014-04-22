@@ -22,7 +22,7 @@ var settings = {
 	numberEngines: 2 
 };
 
-var $Gush = function ($, $Config) {
+(function($, $Config) {
 	var searchTable = false,
 		openRow = false,
 		infoRow = false,
@@ -416,12 +416,6 @@ var $Gush = function ($, $Config) {
 		return false;
 	}
 
-	var contract = {
-		init: init
-	};
-
-	return contract;
-}(jQuery, settings);
-
-
-$(document).ready($Gush.init);
+	$(document).ready(init);
+	
+})(jQuery, settings);
