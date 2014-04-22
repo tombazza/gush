@@ -9,6 +9,13 @@ Some of the upstream modules included for Gush may access sites that are blocked
 
 Further, the data sources that are included are left purely as examples of an upstream implementation. They are not officially supported or endorsed by the websites they connect to. As such, their use may be against the terms of service of the systems they represent.
 
+### Uses
+
+* [jQuery](http://jquery.org)
+* [Moment.js](http://momentjs.com/)
+* [mustache.js](https://github.com/janl/mustache.js)
+* [DataTables](https://datatables.net/)
+
 ### Installation
 
 Gush requires the following components to work correctly:
