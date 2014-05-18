@@ -29,14 +29,73 @@ var settings = {
 		searchBox = false,
 		resultsIndex = [],
 		error = false,
-		errorTypes = ['Generic', 'Data', 'Auth'],
 		resultsWrapper = false;
+	
+	var templateEngine = (function() {
+		var viewport,
+			templates;
+			
+		function init() {
+			$('script[type="text/mustache"]').each(function() {
+				var template = $(this);
+				templates[template.attr('id')] = template.html();
+			});
+			viewport = $('#viewport');
+		}
+		
+		return {
+			init: init
+		};
+	});
+	
+	var eventHandler = (function() {
+		var searchBox;
+		
+		function init() {
+			searchBox = $('#query');
+			registerHandlers();
+		}
+		
+		function registerHandlers() {
+			$(document).on('keydown', '#query', submitForm);
+			$(document).on('focus', '#query', focusForm);
+			$(document).on('blur', '#query', blurForm);
+		}
+		
+		function focusForm(e) {
+			searchBox.addClass('focus');
+			if (!connectionManager.hasAuth()) {
+				$(this).removeClass('passcode').val('').attr('type', 'password');
+			}
+		}
 
+		function blurForm(e) {
+			searchBox.removeClass('focus');
+			if (!connectionManager.hasAuth() && !error) {
+				$(this).val('').attr('type', 'text').val('passcode?');
+			}
+		}
+
+		function submitForm(e) {
+			if (e.which == 13 && searchBox.val().length > 0) {
+				if (!connectionManager.hasAuth()) {
+					connectionManager.performLogin($(this).val(), postAuth);
+				} else {
+					performSearch();
+					$(this).blur();
+				}
+			}
+		}
+	
+		return {
+			init: init
+		};
+	});
+	
 	function init() {
-		searchBox = $('#query');
-		searchBox.keydown(formSubmit);
-		searchBox.focus(formFocus);
-		searchBox.blur(formBlur);
+		templateEngine.init();
+		eventHandler.init();
+		
 		infoRow = $('.info_content').clone();
 		connectionManager.setLoadingCallback(function() {
 			searchBox.addClass('loading');
@@ -74,31 +133,6 @@ var settings = {
 		}
 	}
 	
-	function formFocus(e) {
-		searchBox.addClass('focus');
-		if (!connectionManager.hasAuth()) {
-			$(this).removeClass('passcode').val('').attr('type', 'password');
-		}
-	}
-
-	function formBlur(e) {
-		searchBox.removeClass('focus');
-		if (!connectionManager.hasAuth() && !error) {
-			$(this).val('').attr('type', 'text').val('passcode?');
-		}
-	}
-
-	function formSubmit(e) {
-		if (e.which == 13 && searchBox.val().length > 0) {
-			if (!connectionManager.hasAuth()) {
-				connectionManager.performLogin($(this).val(), postAuth);
-			} else {
-				performSearch();
-				$(this).blur();
-			}
-		}
-	}
-
 	function performSearch() {
 		error = false;
 		$('#status').removeClass('error');
