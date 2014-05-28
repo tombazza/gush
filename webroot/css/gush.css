@@ -1,0 +1,60 @@
+/*
+
+Gush - Aggregating torrent search engine
+Copyright (C) 2014 tombazza
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/*
+Theme based on: https://kuler.adobe.com/Flat-UI-color-theme-2469224/
+*/
+
+/*
+#2C3E50
+#E74C3C
+#ECF0F1
+#3498DB
+#2980B9
+*/
+
+body {
+	background-color: #EEEEEE;
+}
+
+h1 {
+	background-color: #2980B9;
+	color: #FFFFFF;
+	margin: 0;
+	padding: 1%;
+}
+
+#search {
+	padding: 1%;
+}
+
+#search input {
+	display: block;
+	border: 1px solid #808080;
+	width: 100%;
+	line-height: 30px;
+	font-size: 25px;
+	padding: 1%;
+	box-sizing: border-box;
+}
+
+#viewport {
+	width: 98%;
+	padding: 1%;
+}
