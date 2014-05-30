@@ -120,8 +120,9 @@ h1 {
 
 #status.error {
 	display: block;
-	border-color: #A24162;
-	background-color: #5B474F;
+	color: #ffffff;
+	border-color: #c82a19;
+	background-color: #c82a19;
 	background-image: url('../images/cross.png');
 }
 
