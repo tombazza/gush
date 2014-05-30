@@ -25,8 +25,6 @@ var settings = {
 (function($, $Config) {
 	var searchTable = false,
 		openRow = false,
-		infoRow = false,
-		searchBox = false,
 		resultsIndex = [],
 		error = false,
 		resultsWrapper = false;
@@ -94,6 +92,13 @@ var settings = {
 					$(this).blur();
 				}
 			}
+		}
+		
+		function postAuth() {
+			$('body').removeClass('load');
+			$('#query').replaceWith('<input type="text" id="query" name="query" placeholder="Search">');
+			searchBox = $('#query');
+			searchBox.focus();
 		}
 		
 		function tabClick(e) {
@@ -295,10 +300,7 @@ var settings = {
 		};
 	}();
 
-	function postAuth() {
-		$('body').removeClass('load');
-		$('#query').attr('type', 'text').val('');
-	}
+	
 
 	function displayError(response) {
 		error = true;
@@ -306,7 +308,7 @@ var settings = {
 		$('#status').html('Error: ' + response.message);
 		sizeResultsArea();
 		if (response.code == 2) {
-			searchBox.attr('disabled', 'disabled').blur();
+			$('#query').attr('disabled', 'disabled').blur();
 			setTimeout(function () {
 				window.location = window.location;
 			}, 1500);
@@ -314,7 +316,6 @@ var settings = {
 	}
 	
 	function searchResponse(data) {
-		logData(data);
 		var tableData = {
 			bPaginate: false,
 			bFilter: false,
@@ -391,8 +392,6 @@ var settings = {
 
 	function drawInfoRow(hash) {
 		var torrentData = resultsIndex[hash];
-		logData(torrentData);
-		
 		var templateData = {};
 		templateData.trackers = [];
 		templateData.torrentName = torrentData.name;
@@ -408,7 +407,6 @@ var settings = {
 		$.each(torrentData.magnetParts.tr, function(id, tracker) {
 			templateData.trackers.push({trackerName: decodeURIComponent(tracker)});
 		});
-		console.log(templateData);
 		return templateEngine.render('infoRow', templateData);
 	}
 	
@@ -419,7 +417,6 @@ var settings = {
 	}
 
 	function receiveMetaData(data) {
-		logData(data);
 		if (data.files.length) {
 			var filesPage = $('#file-page');
 			var fileList = {files: []};
@@ -446,10 +443,6 @@ var settings = {
 			commentsPage.html(templateEngine.render('commentsPageContent', commentList));
 			$('#comments-tab a').html('Comments (' + commentList.comments.length + ')');
 		}
-	}
-	
-	function logData(data) {
-		window.console && console.log(data);
 	}
 	
 	function inObject(needle, haystack) {

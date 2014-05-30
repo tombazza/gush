@@ -30,7 +30,7 @@ Theme based on: https://kuler.adobe.com/Flat-UI-color-theme-2469224/
 */
 
 html {
-	background-color: #EEEEEE;
+	background-color: #ECF0F1;
 	font-family: sans-serif;
 }
 
@@ -48,7 +48,6 @@ h1 {
 	font-weight: 400;
 	border-bottom: 5px solid #2980B9;
 	color: #FFFFFF;
-	font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
 	background-color: #3498DB;
 	text-shadow: 0 0 10px #DAD3D3;
 	filter: dropshadow(color = #FFFFFF, offx = 0, offy = 0);
@@ -58,29 +57,22 @@ h1 {
 	overflow: hidden;
 }
 
-#search {
-	padding: 10px;
-}
-
 #search input {
 	width: 100%;
 	font-size: 30px;
 	border: 1px solid #333333;
-	background-color: #333333;
-	padding: 5px 50px 5px 5px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
+	background-color: #2C3E50;
+	padding: 5px 50px 5px 15px;
 	color: #808080;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
+	line-height: 40px;
 }
 
 #search input.focus {
 	 color: #FFFFFF;
 	 outline: none;
-	 border: 1px solid #808080;
 }
 
 #search .loading {
@@ -94,13 +86,15 @@ h1 {
 }
 
 #results_wrapper {
-	padding: 0 10px;
+	padding: 5px 10px 0;
 	overflow-y: scroll;
 	overflow-x: hidden;
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
 }
 
 #results .info_row {
-	padding: 5px !important;
+	padding: 5px 0 !important;
 }
 
 .info_content {
@@ -146,8 +140,8 @@ h1 {
 
 #results.dataTable > tbody > tr > td {
 	padding-left: 5px;
-	color: #DCDCDC;
-	background-color: #474747;
+	color: #1C1C1C;
+	background-color: #ECF0F1;
 	white-space: nowrap;
 }
 
@@ -160,40 +154,33 @@ h1 {
 }
 
 #results.dataTable tr.odd td {
-	background-color: #5B474F;
+	background-color: #93c8ec;
 }
 
 #results.dataTable tr.odd td.sorting_1,#results.dataTable tr.odd td.sorting_2,#results.dataTable tr.odd td.sorting_3 {
-	background-color: #543A46;
+	background-color: #49a3df;
 }
 
 #results.dataTable tr.even td.sorting_1,#results.dataTable tr.even td.sorting_2,#results.dataTable tr.even td.sorting_3 {
-	background-color: #443039;
+	background-color: #93c8ec;
 }
 
 /* Table highlight */
 #results.dataTable tbody tr.even:hover td, #results.dataTable tbody tr.even td.highlighted,
 #results.dataTable tbody tr.odd:hover td, #results.dataTable tbody tr.odd td.highlighted {
-	background-color: #702E45;
+	background-color: #E74C3C;
+	color: #FFFFFF;
 }
 
 #results.dataTable tr.even:hover td.sorting_1, #results.dataTable tr.even:hover td.sorting_2, #results.dataTable tr.even:hover td.sorting_3,
 #results.dataTable tr.odd:hover td.sorting_1, #results.dataTable tr.odd:hover td.sorting_2, #results.dataTable tr.odd:hover td.sorting_3 {
-	background-color: #491F2E;
+	background-color: #c32918;
 }
 
-/* alt states 
-body.load h1 {
-	border-color: #808080;
-	background-color: #333333;
-	text-shadow: 0 0 10px #616161;
-	filter: dropshadow(color = #616161, offx = 0, offy = 0);
-}
-*/
 /* info row */
 ul.tab-names {
 	height: 30px;
-	border-bottom: 1px solid #DCDCDC;
+	border-bottom: 1px solid #CCCCCC;
 	margin: 0;
 	padding: 0;
 }
@@ -203,20 +190,20 @@ ul.tab-names {
 	float: left;
 	height: 30px;
 	margin-bottom: -1px;
-	border-bottom: 1px solid #DCDCDC;
+	border-bottom: 1px solid #CCCCCC;
 	overflow: hidden;
+	margin-right: 3px;
 }
 
 .info_content ul.tab-names li.selected {
-	border-bottom: 1px solid #F0F0F0;
+	border-bottom: 1px solid #FFFFFF;
 }
 
 .info_content ul.tab-names li a {
-	margin-right: 2px;
 	border-width: 1px 1px 1px 1px;
-	border-color: #808080;
+	border-color: #CCCCCC;
 	border-style: solid;
-	background-color: #333333;
+	background-color: #CCCCCC;
 	background-repeat: no-repeat;
 	background-position: 10px center;
 	padding: 5px 10px 5px 36px;
@@ -248,22 +235,22 @@ ul.tab-names {
 }
 
 .info_content ul.tab-names li.selected a {
-	background-color: #F0F0F0;;
-	border-color: #DCDCDC;
+	background-color: #FFFFFF;
+	border-color: #CCCCCC;
 	opacity:1;
 	filter:alpha(opacity=100);
 	color: #333333;
 }
 
 .info_content .tab-contents {
-	border: 1px solid #DCDCDC;
+	border: 1px solid #CCCCCC;
 	border-top-width: 0;
 	clear: both;
 	height: 250px;
 	overflow: auto;
 	position: relative;
 	padding: 5px;
-	background-color: #F0F0F0;
+	background-color: #FFFFFF;
 	display: none;
 	color: #333333;
 }
@@ -293,14 +280,22 @@ a.magnet {
 	display: block;
 	background-position: 10px;
 	text-decoration: none;
-	background-color: #97cb7e;
+	background-color: #b9e5a4;
 	color: #0D5722;
 	font-weight: bold;
 	text-align: center;
 	width: 100px;
-	border: 2px solid #b9e5a4;
+	border-width: 0px;
 	float: left;
 	margin: 0 10px 20px 0;
+	
+	-webkit-box-shadow: 0px 3px 0px 0px #97cb7e;
+-moz-box-shadow:    0px 3px 0px 0px #97cb7e;
+box-shadow:         0px 3px 0px 0px #97cb7e;
+
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
 }
 
 #info-page h2 {
