@@ -151,7 +151,6 @@ var settings = {
 	}
 
 	function sizeResultsArea() {
-		$('#info-page h2').width($(window).width() - 210);
 		headerHeight = $('#header').outerHeight();
 		resultsWrapper = $('#results_wrapper');
 		if(resultsWrapper) {
