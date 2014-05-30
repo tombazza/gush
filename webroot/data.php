@@ -38,7 +38,6 @@ if($config['show_errors']) {
 
 $passcode = trim(file_get_contents($config['passcode_file']));
 
-
 class GushException extends Exception {
 	const Auth = 2;
 	const Data = 1;

@@ -32,21 +32,24 @@ var settings = {
 		resultsWrapper = false;
 	
 	var templateEngine = (function() {
-		var viewport,
-			templates;
+		var templates = [];
 			
 		function init() {
 			$('script[type="text/mustache"]').each(function() {
 				var template = $(this);
 				templates[template.attr('id')] = template.html();
 			});
-			viewport = $('#viewport');
+		}
+		
+		function render(templateId, data) {
+			return Mustache.render(templates[templateId], data);
 		}
 		
 		return {
-			init: init
+			init: init,
+			render: render
 		};
-	});
+	})();
 	
 	var eventHandler = (function() {
 		var searchBox;
@@ -60,6 +63,12 @@ var settings = {
 			$(document).on('keydown', '#query', submitForm);
 			$(document).on('focus', '#query', focusForm);
 			$(document).on('blur', '#query', blurForm);
+			$(document).on('click', '.info_content .tab-names li a', tabClick);
+			connectionManager.setLoadingCallback(function() {
+				searchBox.addClass('loading');
+			}, function() {
+				searchBox.removeClass('loading');
+			});
 		}
 		
 		function focusForm(e) {
@@ -86,22 +95,35 @@ var settings = {
 				}
 			}
 		}
+		
+		function tabClick(e) {
+			e.preventDefault();
+			var parent = $(this).parent('li');
+			$('.info_content .tab-names li').removeClass('selected');
+			parent.addClass('selected');
+			var id = parent.attr('id').replace('-tab', '');
+			$('.tab-contents').hide();
+			$('#' + id + '-page').show();
+			return false;
+		}
+		
+		function performSearch() {
+			error = false;
+			$('#status').removeClass('error');
+			if (searchTable) searchTable.fnClearTable();
+			resultsIndex = [];
+			connectionManager.submitSearch($('#query').val(), searchResponse);
+		}
 	
 		return {
 			init: init
 		};
-	});
+	})();
 	
 	function init() {
 		templateEngine.init();
 		eventHandler.init();
 		
-		infoRow = $('.info_content').clone();
-		connectionManager.setLoadingCallback(function() {
-			searchBox.addClass('loading');
-		}, function() {
-			searchBox.removeClass('loading');
-		});
 		connectionManager.init();
 		$(window).resize(sizeResultsArea);
 		$('#status').click(function() {
@@ -131,16 +153,7 @@ var settings = {
 			var calcHeight = ($(window).height() - headerHeight);
 			resultsWrapper.css('height', calcHeight + 'px');
 		}
-	}
-	
-	function performSearch() {
-		error = false;
-		$('#status').removeClass('error');
-		if (searchTable) searchTable.fnClearTable();
-		resultsIndex = [];
-		var query = $('#query').val();
-		connectionManager.submitSearch(query, searchResponse);
-	}
+	}	
 
 	var connectionManager = function () {
 		var passcode = '',
@@ -377,65 +390,61 @@ var settings = {
 	}
 
 	function drawInfoRow(hash) {
-		var row = resultsIndex[hash];
-		logData(row);
-		var magnetURI = 'magnet:?xt=' + row.magnetParts.xt[0] + '&tr=' + row.magnetParts.tr.join('&tr=') + '&dn=' + row.magnetParts.dn[0];
-		infoRow.find('a.magnet').attr('href', magnetURI);
-
-		var commentsText = 'Comments';
-		if (row.comments) {
-			commentsText = 'Comments (' + row.comments + ')';
+		var torrentData = resultsIndex[hash];
+		logData(torrentData);
+		
+		var templateData = {};
+		templateData.trackers = [];
+		templateData.torrentName = torrentData.name;
+		templateData.magnetLink = buildMagnetUri(torrentData);
+		if (torrentData.comments) {
+			templateData.comments = torrentData.comments;
 		}
-		infoRow.find('#comments-tab a').html(commentsText);
-
-		infoRow.find('#file-page table tbody').html('');
-		infoRow.find('#comments-page').html('');
-		infoRow.find('.trackers').html('');
-		infoRow.find('h2').html('').html(row.name);
-
-		infoRow.find('li a').click(function (e) {
-			e.preventDefault();
-			infoRow.find('li').removeClass('selected');
-			$(this).parent().addClass('selected');
-			var id = $(this).parent().attr('id').replace('-tab', '');
-			infoRow.find('.tab-contents').hide();
-			infoRow.find('#' + id + '-page').show();
-		});
-		$.each(row.metadata, function (id, meta) {
+		
+		$.each(torrentData.metadata, function (id, meta) {
 			connectionManager.getMeta(meta.id, meta.name, receiveMetaData);
 		});
 		
-		$.each(row.magnetParts.tr, function(id, tracker) {
-			infoRow.find('.trackers').append('<li>' + decodeURIComponent(tracker) + '</li>');
+		$.each(torrentData.magnetParts.tr, function(id, tracker) {
+			templateData.trackers.push({trackerName: decodeURIComponent(tracker)});
 		});
-		return infoRow;
+		console.log(templateData);
+		return templateEngine.render('infoRow', templateData);
+	}
+	
+	function buildMagnetUri(torrentData) {
+		var magnetURI = 'magnet:?xt=' + torrentData.magnetParts.xt[0] + '&tr=';
+		magnetURI += torrentData.magnetParts.tr.join('&tr=') + '&dn=' + torrentData.magnetParts.dn[0];
+		return magnetURI;
 	}
 
 	function receiveMetaData(data) {
 		logData(data);
 		if (data.files.length) {
-			filesPage = infoRow.find('#file-page table tbody');
-			var fileList = '';
+			var filesPage = $('#file-page');
+			var fileList = {files: []};
 			if (filesPage.html() == '') {
-				$.each(data.files, function (id, value) {
-					fileList += '<tr><td>' + value.filename + '</td><td>' + value.size + '</td></tr>';
-				});
-				infoRow.find('#file-page table tbody').html(fileList);
+				fileList.files = data.files;
+				filesPage.html(templateEngine.render('filePageContent', fileList));
 			}
+			
 		}
 		if (data.comments) {
-			commentsPage = infoRow.find('#comments-page');
-			commentCount = infoRow.find('#comments-page div').length;
-			var commentsHtml = commentsPage.html();
-			for (i = 0; i < data.comments.length; i++) {
-				comment = $.trim(data.comments[i]);
-				if (comment) {
-					commentsHtml += '<div>' + comment + '</div>';
-					commentCount++;
+			var commentsPage = $('#comments-page');
+			var previousComments = commentsPage.find('div');
+			var commentList = {comments: []};
+			$.each(data.comments, function(id, comment) {
+				if(comment) {
+					commentList.comments.push({comment: comment});
 				}
-			}
-			commentsPage.html(commentsHtml);
-			infoRow.find('#comments-tab a').html('Comments (' + commentCount + ')');
+			});
+			$.each(previousComments, function(id, comment) {
+				if(comment) {
+					commentList.comments.push({comment: $(this).html()});
+				}
+			});
+			commentsPage.html(templateEngine.render('commentsPageContent', commentList));
+			$('#comments-tab a').html('Comments (' + commentList.comments.length + ')');
 		}
 	}
 	
