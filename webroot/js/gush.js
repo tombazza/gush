@@ -24,7 +24,6 @@ var settings = {
 
 (function($, $Config) {
 	var searchTable = false,
-		openRow = false,
 		resultsIndex = [],
 		error = false,
 		resultsWrapper = false;
@@ -156,6 +155,7 @@ var settings = {
 		if(resultsWrapper) {
 			var calcHeight = ($(window).height() - headerHeight);
 			resultsWrapper.css('height', calcHeight + 'px');
+			return calcHeight;
 		}
 	}	
 
@@ -316,28 +316,31 @@ var settings = {
 	
 	function searchResponse(data) {
 		var tableData = {
-			bPaginate: false,
-			bFilter: false,
-			bInfo: false,
-			aaData: [],
-			aoColumns: [{
-				sTitle: 'Name',
-				sWidth: '70%'
+			paging: false,
+			ordering: true,
+			info: false,
+			searching: false,
+			data: [],
+			columns: [{
+				title: 'Name',
+				width: '70%'
 			}, {
-				sTitle: 'Date',
-				iDataSort: 6
+				title: 'Date'
 			}, {
-				sTitle: 'Size',
-				sType: 'file-size'
+				title: 'Size',
+				type: 'file-size'
 			}, {
-				sTitle: 'Seeds'
+				title: 'Seeds'
 			}, {
-				sTitle: 'Peers'
+				title: 'Peers'
 			}, {
-				bVisible: false
+				visible: false
 			}, {
-				bVisible: false
-			}]
+				visible: false
+			}],
+			"scrollY": (sizeResultsArea() - 32),
+			"scrollCollapse": true,
+			order: [[3, 'desc']]
 		};
 		$.each(data, function (key, item) {
 			var hash = item.hash.toUpperCase();
@@ -346,7 +349,7 @@ var settings = {
 				resultsIndex[hash].metadata = [item.metadata];
 				var maxLength = 50;
 				var trimmedName = item.name.length > maxLength ? item.name.substring(0, (maxLength - 3)) + '...' : item.name.substring(0, maxLength);
-				tableData.aaData.push([
+				tableData.data.push([
 					trimmedName,
 					moment.unix(item.date).format('DD MMM YYYY HH:mm'),
 					item.size,
@@ -368,23 +371,25 @@ var settings = {
 
 	function initTable(tableData) {
 		if (!searchTable) {
-			searchTable = $('#results').dataTable(tableData);
+			searchTable = $('#results').DataTable(tableData);
 		} else {
-			searchTable.fnAddData(tableData.aaData);
+			searchTable.rows.add(tableData.data).draw();
 		}
 		sizeResultsArea();
-		searchTable.fnSort([
-			[3, 'desc']
-		]);
 		$('#results tbody tr').unbind('click');
 		$('#results tbody tr').bind('click', function () {
-			if (searchTable.fnIsOpen(this)) {
-				searchTable.fnClose(this);
+			var tr = $(this);
+			var row = searchTable.row(tr);
+			if (row.child.isShown()) {
+				row.child.hide();
 			} else {
-				var info = searchTable.fnGetData(this)[5];
-				searchTable.fnClose(openRow);
-				searchTable.fnOpen(this, drawInfoRow(info), "info_row");
-				openRow = this;
+				$.each($('#results tbody tr'), function() {
+					var row = searchTable.row($(this));
+					if(row.child.isShown()) {
+						row.child.hide();
+					}
+				});
+				row.child(drawInfoRow(row.data()[5]), 'info_row').show();
 			}
 		});
 	}

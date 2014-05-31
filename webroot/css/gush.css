@@ -87,8 +87,7 @@ h1 {
 
 #results_wrapper {
 	padding: 5px 10px 0;
-	overflow-y: scroll;
-	overflow-x: hidden;
+	overflow: hidden;
 	box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 }
@@ -303,6 +302,7 @@ a.magnet {
 	white-space: pre-wrap;
 	font-weight: bold;
 	margin: 5px 0 10px;
+	border-bottom: 1px solid #cccccc;
 }
 
 #info-page .title {
