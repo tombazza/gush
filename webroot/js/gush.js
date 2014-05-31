@@ -114,7 +114,7 @@ var settings = {
 		function performSearch() {
 			error = false;
 			$('#status').removeClass('error');
-			if (searchTable) searchTable.fnClearTable();
+			if (searchTable) searchTable.clear();
 			resultsIndex = [];
 			connectionManager.submitSearch($('#query').val(), searchResponse);
 		}
@@ -428,7 +428,6 @@ var settings = {
 				fileList.files = data.files;
 				filesPage.html(templateEngine.render('filePageContent', fileList));
 			}
-			
 		}
 		if (data.comments) {
 			var commentsPage = $('#comments-page');
