@@ -127,8 +127,8 @@ var settings = {
 	function init() {
 		templateEngine.init();
 		eventHandler.init();
-		
 		connectionManager.init();
+		
 		$(window).resize(sizeResultsArea);
 		$('#status').click(function() {
 		   $(this).removeClass('error');
@@ -340,7 +340,8 @@ var settings = {
 			}],
 			"scrollY": (sizeResultsArea() - 32),
 			"scrollCollapse": true,
-			order: [[3, 'desc']]
+			order: [[3, 'desc']],
+			autoWidth: true
 		};
 		$.each(data, function (key, item) {
 			var hash = item.hash.toUpperCase();
@@ -351,7 +352,7 @@ var settings = {
 				var trimmedName = item.name.length > maxLength ? item.name.substring(0, (maxLength - 3)) + '...' : item.name.substring(0, maxLength);
 				tableData.data.push([
 					trimmedName,
-					moment.unix(item.date).format('DD MMM YYYY HH:mm'),
+					moment.unix(item.date).format('YYYY-MM-DD HH:mm'),
 					item.size,
 					item.seeds,
 					item.peers,
@@ -382,13 +383,16 @@ var settings = {
 			var row = searchTable.row(tr);
 			if (row.child.isShown()) {
 				row.child.hide();
+				tr.removeClass('row-open');
 			} else {
 				$.each($('#results tbody tr'), function() {
 					var row = searchTable.row($(this));
 					if(row.child.isShown()) {
 						row.child.hide();
+						$(this).removeClass('row-open');
 					}
 				});
+				tr.addClass('row-open');
 				row.child(drawInfoRow(row.data()[5]), 'info_row').show();
 			}
 		});

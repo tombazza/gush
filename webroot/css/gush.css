@@ -49,8 +49,8 @@ h1 {
 	border-bottom: 5px solid #2980B9;
 	color: #FFFFFF;
 	background-color: #3498DB;
-	text-shadow: 0 0 10px #DAD3D3;
-	filter: dropshadow(color = #FFFFFF, offx = 0, offy = 0);
+	text-shadow: 0 0 10px #1d5c86;
+	filter: dropshadow(color = #1d5c86, offx = 0, offy = 0);
 }
 
 #header {
@@ -93,7 +93,7 @@ h1 {
 }
 
 #results .info_row {
-	padding: 5px 0 !important;
+	padding: 5px !important;
 }
 
 .info_content {
@@ -133,9 +133,10 @@ h1 {
 }
 
 /* Data Table */
-#results.dataTable thead th {
+table.dataTable thead tr th {
 	padding: 3px 18px 3px 5px;
-	border-color: #333333;
+	border-color: #999999;
+	color: #555555;
 }
 
 #results.dataTable > tbody > tr > td {
@@ -153,28 +154,40 @@ h1 {
 	background-image: url('../images/sort_asc.png');
 }
 
-#results.dataTable tr.odd td {
+#results.dataTable > tbody > tr > td {
+	background-color: #e9f4fb;
+	padding: 10px 5px;
+	line-height: 20px;
+	font-size: 16px;
+	border-bottom: 1px solid #c7e3f5;
+	text-align: center;
+}
+
+#results.dataTable tbody tr > td:first-child {
+	text-align: left;
+}
+
+#results.dataTable tbody tr.row-open > td {
+	border-bottom-width: 0px !important;
+}
+
+#results.dataTable tbody tr > td.info_row {
+	background-color: #e9f4fb !important;
+}
+
+#results.dataTable > tbody > tr > td.sorting_1,#results.dataTable > tbody > tr > td.sorting_2, #results.dataTable > tbody > tr > td.sorting_3 {
 	background-color: #93c8ec;
+	border-bottom: 1px solid #67b2e4;
 }
 
-#results.dataTable tr.odd td.sorting_1,#results.dataTable tr.odd td.sorting_2,#results.dataTable tr.odd td.sorting_3 {
-	background-color: #49a3df;
-}
-
-#results.dataTable tr.even td.sorting_1,#results.dataTable tr.even td.sorting_2,#results.dataTable tr.even td.sorting_3 {
-	background-color: #93c8ec;
-}
-
-/* Table highlight */
-#results.dataTable tbody tr.even:hover td, #results.dataTable tbody tr.even td.highlighted,
-#results.dataTable tbody tr.odd:hover td, #results.dataTable tbody tr.odd td.highlighted {
-	background-color: #E74C3C;
+/* Highlight */
+#results.dataTable > tbody > tr:hover > td,#results.dataTable > tbody > tr:hover > td, #results.dataTable > tbody > tr:hover > td {
+	background-color: #4B4E75;
 	color: #FFFFFF;
 }
 
-#results.dataTable tr.even:hover td.sorting_1, #results.dataTable tr.even:hover td.sorting_2, #results.dataTable tr.even:hover td.sorting_3,
-#results.dataTable tr.odd:hover td.sorting_1, #results.dataTable tr.odd:hover td.sorting_2, #results.dataTable tr.odd:hover td.sorting_3 {
-	background-color: #c32918;
+#results.dataTable > tbody > tr:hover > td.sorting_1,#results.dataTable > tbody > tr:hover > td.sorting_2, #results.dataTable > tbody > tr:hover > td.sorting_3 {
+	background-color: #616598;
 }
 
 /* info row */
@@ -249,7 +262,7 @@ ul.tab-names {
 	height: 250px;
 	overflow: auto;
 	position: relative;
-	padding: 5px;
+	padding: 10px;
 	background-color: #FFFFFF;
 	display: none;
 	color: #333333;
@@ -301,8 +314,9 @@ a.magnet {
 	word-wrap: break-word;
 	white-space: pre-wrap;
 	font-weight: bold;
-	margin: 5px 0 10px;
+	margin: 0 0 10px;
 	border-bottom: 1px solid #cccccc;
+	padding: 5px 0;
 }
 
 #info-page .title {
