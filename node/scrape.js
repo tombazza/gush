@@ -1,32 +1,31 @@
-var request = require('request'),
-	cheerio = require('cheerio'),
-	moment = require('moment'),
-	url = require('url'),
-	zlib = require('zlib');
+var cheerio = require('cheerio'),
+	moment = require('moment');
 
-var r = request.defaults({
-	'proxy': 'http://localhost:8443'
-});
-
-;(function() {
+(function() {
 	var http = require('http'),
+		request = require('request'),
+		url = require('url'),
+		zlib = require('zlib'),
 		address = '127.0.0.1',
 		port = 9001;
-		
-	var upstream = (function(r) {
+
+	var upstream = (function() {
 		var defaultOptions = {
-			headers: {
-				'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.114 Safari/537.36'
-			}
-		};
-		
+				headers: {
+					'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.114 Safari/537.36'
+				}
+			},
+			proxiedRequest = request.defaults({
+				'proxy': 'http://localhost:8443'
+			});
+
 		function get(url, callback) {
 			var options = defaultOptions;
 			options.url = url;
-			var requestObject = r.get(options);
+			var requestObject = proxiedRequest.get(options);
 			handleRequest(requestObject, callback);
 		}
-		
+
 		function handleRequest(req, callback) {
 			req.on('response', function(response) {
 				var chunks = [];
@@ -35,11 +34,11 @@ var r = request.defaults({
 				}).on('end', function() {
 					var buffer = Buffer.concat(chunks);
 					var encoding = response.headers['content-encoding'];
-					if(encoding == 'gzip') {
+					if (encoding == 'gzip') {
 						zlib.gunzip(buffer, function(error, decoded) {
 							callback(error, decoded && decoded.toString());
 						});
-					} else if(encoding == 'deflate') {
+					} else if (encoding == 'deflate') {
 						zlib.inflate(buffer, function(error, decoded) {
 							callback(error, decoded && decoded.toString());
 						});
@@ -55,34 +54,33 @@ var r = request.defaults({
 		return {
 			loadUrl: get
 		};
-		
-	})(r);
-	
+
+	})();
+
 	function start() {
 		http.createServer(request).listen(port, address);
 		console.log('Server running on ' + address + ':' + port);
 	}
-	
+
 	function request(request, response) {
 		var urlObject = url.parse(request.url, true);
-		if(urlObject.query) {
+		if (urlObject.query) {
 			process(response, urlObject.query);
 		} else {
-			send(response, {
-				code: 404
-			});
+			send(response, {code: 404});
 		}
 	}
-	
+
 	function process(response, query) {
 		upstream.loadUrl('http://thepiratebay.se/search/' + encodeURIComponent(query.search) + '/0/7/0', function(error, data) {
 			gotUpstreamResponse(response, error, data);
 		});
 	}
-	
+
 	function gotUpstreamResponse(response, error, data) {
-		if(error) {
+		if (error) {
 			console.log(error);
+			send(response, {code: 500});
 		} else {
 			Scraper_Pirate.parse(data, function(results) {
 				send(response, {
@@ -92,52 +90,54 @@ var r = request.defaults({
 			});
 		}
 	}
-	
+
 	function send(response, data) {
 		var body = '';
 		response.writeHead(data.code, {
 			'Content-Type': 'text/plain'
 		});
-		if(data.code === 200) {
+		if (data.code === 200) {
 			body = JSON.stringify(data.body);
 		}
 		response.end(body);
 	}
-	
+
 	start();
-	
+
 })();
 
 var Scraper_Pirate = function(cheerio) {
 
-    function getSearchResults(body, callback) {
+	function getSearchResults(body, callback) {
 		var tmpResults = [];
-		if(body.indexOf('No hits.') == -1) {
+		if (body.indexOf('No hits.') == -1) {
 			var $ = cheerio.load(body);
 			$('#searchResult tr').each(function() {
-				tmpResults.push(parseRow(this, $));
+				parseRow($(this), function(data) {
+					tmpResults.push(data);
+				});
 			});
 		}
 		callback(tmpResults);
-    }
-    
-	function parseRow(row, $) {
-		var result = $(row);
+	}
+
+	function parseRow(result, callback) {
 		if (!result.hasClass('header')) {
 			var link = result.find('.detName a');
 			var name = link.html();
 			var magnet = result.find("a[href^='magnet']").attr('href');
 
 			var commentAlt = result.find('img[alt*="comment"]').attr('alt');
+			var comments = 0;
 			if (commentAlt) {
-				var comments = commentAlt.replace(/\D/g, '');
-			} else {
-				var comments = '0';
+				comments = commentAlt.replace(/\D/g, '');
 			}
 			var dataArea = result.find('font.detDesc').html();
-			if (!dataArea) return true;
+			if (!dataArea) {
+				return false;
+			}
 			var data = dataArea.split(',');
-			
+
 			var size = data[1].replace(' Size ', '').replace('&nbsp;', ' ');
 			var date = data[0].replace('Uploaded ', '').split('&nbsp;');
 			var recordDate = moment().unix();
@@ -158,7 +158,7 @@ var Scraper_Pirate = function(cheerio) {
 					d.setHours(timeParts[0]);
 					d.setMinutes(timeParts[1]);
 					recordDate = moment(d).unix();
-				} else if(date[0] == 'Today') {
+				} else if (date[0] == 'Today') {
 					var d = new Date();
 					d.setHours(timeParts[0]);
 					d.setMinutes(timeParts[1]);
@@ -167,8 +167,10 @@ var Scraper_Pirate = function(cheerio) {
 					recordDate = moment().unix();
 				}
 			}
-			if(!recordDate) recordDate = moment().unix();
-			return {
+			if (!recordDate)
+				recordDate = moment().unix();
+			
+			callback({
 				'name': name,
 				'magnet': magnet,
 				'comments': comments,
@@ -177,7 +179,7 @@ var Scraper_Pirate = function(cheerio) {
 				'id': link.attr('href').split('/')[2],
 				'size': size,
 				'date': recordDate
-			};
+			});
 		}
 	}
 
@@ -185,4 +187,4 @@ var Scraper_Pirate = function(cheerio) {
 		parse: getSearchResults
 	};
 
-} (cheerio);
+}(cheerio);
