@@ -1,77 +1,125 @@
-var request = require('request');
-var cheerio = require('cheerio');
-var moment = require('moment');
-var url = require('url');
+var request = require('request'),
+	cheerio = require('cheerio'),
+	moment = require('moment'),
+	url = require('url'),
+	zlib = require('zlib');
 
 var r = request.defaults({
 	'proxy': 'http://localhost:8443'
 });
 
-var Scraper = function() {
-
-	function startService() {
-		var http = require('http');
-		http.createServer(handleRequest).listen(9001, '127.0.0.1');
-		console.log('Server running at http://127.0.0.1:9001/');
-	}
-
-	function handleRequest(request, response) {
-		var urlObj = url.parse(request.url, true);
-		if(urlObj.query.engine == 'piratebay') {
-			Scraper_Pirate.search(urlObj.query.search, function(data) {
-				sendResponse(response, data);
+;(function() {
+	var http = require('http'),
+		address = '127.0.0.1',
+		port = 9001;
+		
+	var upstream = (function(r) {
+		var defaultOptions = {
+			headers: {
+				'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.114 Safari/537.36'
+			}
+		};
+		
+		function get(url, callback) {
+			var options = defaultOptions;
+			options.url = url;
+			var requestObject = r.get(options);
+			handleRequest(requestObject, callback);
+		}
+		
+		function handleRequest(req, callback) {
+			req.on('response', function(response) {
+				var chunks = [];
+				response.on('data', function(chunk) {
+					chunks.push(chunk);
+				}).on('end', function() {
+					var buffer = Buffer.concat(chunks);
+					var encoding = response.headers['content-encoding'];
+					if(encoding == 'gzip') {
+						zlib.gunzip(buffer, function(error, decoded) {
+							callback(error, decoded && decoded.toString());
+						});
+					} else if(encoding == 'deflate') {
+						zlib.inflate(buffer, function(error, decoded) {
+							callback(error, decoded && decoded.toString());
+						});
+					} else {
+						callback(null, buffer.toString());
+					}
+				});
+			}).on('error', function(error) {
+				callback(error);
 			});
+		}
+
+		return {
+			loadUrl: get
+		};
+		
+	})(r);
+	
+	function start() {
+		http.createServer(request).listen(port, address);
+		console.log('Server running on ' + address + ':' + port);
+	}
+	
+	function request(request, response) {
+		var urlObject = url.parse(request.url, true);
+		if(urlObject.query) {
+			process(response, urlObject.query);
 		} else {
-			sendError(response, 404);
+			send(response, {
+				code: 404
+			});
 		}
 	}
-
-	function sendResponse(response, data) {
-		response.writeHead(200, {
+	
+	function process(response, query) {
+		upstream.loadUrl('http://thepiratebay.se/search/' + encodeURIComponent(query.search) + '/0/7/0', function(error, data) {
+			gotUpstreamResponse(response, error, data);
+		});
+	}
+	
+	function gotUpstreamResponse(response, error, data) {
+		if(error) {
+			console.log(error);
+		} else {
+			Scraper_Pirate.parse(data, function(results) {
+				send(response, {
+					code: 200,
+					body: results
+				});
+			});
+		}
+	}
+	
+	function send(response, data) {
+		var body = '';
+		response.writeHead(data.code, {
 			'Content-Type': 'text/plain'
 		});
-		response.end(JSON.stringify(data));
+		if(data.code === 200) {
+			body = JSON.stringify(data.body);
+		}
+		response.end(body);
 	}
+	
+	start();
+	
+})();
 
-	function sendError(response, code) {
-		response.writeHead(code, {
-			'Content-Type': 'text/plain'
-		});
-		response.end();
-	}
+var Scraper_Pirate = function(cheerio) {
 
-	return {
-		init: startService
-	};
-}();
+	var responseSet = [];
 
-Scraper.init();
-
-var Scraper_Pirate = function(cheerio, request) {
-
-	var resultCallback = null,
-		responseSet = [];
-
-    function getSearchResults(query, callback) {
-        responseSet = [];
-        resultCallback = callback;
-        var options = {
-            url: 'http://thepiratebay.se/search/' + encodeURIComponent(query) + '/0/7/0',
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (MSIE 9.0; Windows NT 6.1; Trident/5.0)'
-            }
-        };
-        request.get(options, function (error, response, body) {
-            if (error)
-                throw error;
-            if(body.indexOf('No hits.') == -1) {
-                var $ = cheerio.load(body);
-                $('#searchResult tr').each(function() {
-                    parseRow(this, $);
-                });
-            }
-            callback(responseSet);
-        });
+    function getSearchResults(body, callback) {
+		if(body.indexOf('No hits.') == -1) {
+			var $ = cheerio.load(body);
+			$('#searchResult tr').each(function() {
+				parseRow(this, $);
+			});
+		}
+		callback(responseSet);
     }
     
 	function parseRow(row, $) {
@@ -135,7 +183,7 @@ var Scraper_Pirate = function(cheerio, request) {
 	}
 
 	return {
-		search: getSearchResults
+		parse: getSearchResults
 	};
 
-} (cheerio, r);
+} (cheerio);
