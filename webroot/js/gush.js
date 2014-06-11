@@ -339,7 +339,7 @@ var settings = {
 				visible: false
 			}],
 			"scrollY": (sizeResultsArea() - 32),
-			"scrollCollapse": true,
+			"scrollCollapse": false,
 			order: [[3, 'desc']],
 			autoWidth: true
 		};
