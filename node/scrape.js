@@ -110,16 +110,15 @@ var r = request.defaults({
 
 var Scraper_Pirate = function(cheerio) {
 
-	var responseSet = [];
-
     function getSearchResults(body, callback) {
+		var tmpResults = [];
 		if(body.indexOf('No hits.') == -1) {
 			var $ = cheerio.load(body);
 			$('#searchResult tr').each(function() {
-				parseRow(this, $);
+				tmpResults.push(parseRow(this, $));
 			});
 		}
-		callback(responseSet);
+		callback(tmpResults);
     }
     
 	function parseRow(row, $) {
@@ -169,7 +168,7 @@ var Scraper_Pirate = function(cheerio) {
 				}
 			}
 			if(!recordDate) recordDate = moment().unix();
-			responseSet.push({
+			return {
 				'name': name,
 				'magnet': magnet,
 				'comments': comments,
@@ -178,7 +177,7 @@ var Scraper_Pirate = function(cheerio) {
 				'id': link.attr('href').split('/')[2],
 				'size': size,
 				'date': recordDate
-			});
+			};
 		}
 	}
 
