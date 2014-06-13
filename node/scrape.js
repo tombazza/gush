@@ -1,12 +1,12 @@
 var cheerio = require('cheerio'),
-	moment = require('moment');
+	moment = require('moment'),
+	http = require('http'),
+	request = require('request'),
+	url = require('url'),
+	zlib = require('zlib');
 
 (function() {
-	var http = require('http'),
-		request = require('request'),
-		url = require('url'),
-		zlib = require('zlib'),
-		address = '127.0.0.1',
+	var address = '127.0.0.1',
 		port = 9001;
 
 	var upstream = (function() {
@@ -58,11 +58,11 @@ var cheerio = require('cheerio'),
 	})();
 
 	function start() {
-		http.createServer(request).listen(port, address);
+		http.createServer(receive).listen(port, address);
 		console.log('Server running on ' + address + ':' + port);
 	}
 
-	function request(request, response) {
+	function receive(request, response) {
 		var urlObject = url.parse(request.url, true);
 		if (urlObject.query) {
 			process(response, urlObject.query);
