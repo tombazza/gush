@@ -292,6 +292,7 @@ ul.tab-names {
 }
 
 .info_content #comments-page div.expanded:after {
+	font-weight: bold;
 	content: " ... ";
 }
 
