@@ -281,6 +281,32 @@ ul.tab-names {
 	padding: 5px;
 	margin-bottom: 10px;
 }
+
+.info_content #comments-page p {
+	font-weight: bold;
+	margin-top: 0;
+}
+
+.info_content #comments-page div.expanded {
+	cursor: pointer;
+}
+
+.info_content #comments-page div.expanded:after {
+	content: " ... ";
+}
+
+.info_content #comments-page div.visible.expanded:after {
+	display: none;
+}
+
+.info_content #comments-page div span {
+	display: none;
+}
+
+.info_content #comments-page div.visible span {
+	display: inline;
+}
+
 .info_content .tab-contents strong {
 	font-weight: bold;
 }

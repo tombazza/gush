@@ -45,7 +45,8 @@
 			{{#files}}<tr><td>{{filename}}</td><td>{{size}}</td>{{/files}}</tbody></table>
 		</script>
 		<script type="text/mustache" id="commentsPageContent">
-			{{#comments}}<div>{{comment}}</div>{{/comments}}
+			<p>Long comments are trimmed, click to show the entire comment.</p>
+			{{#comments}}<div{{#commentRemainder}} class="expanded"{{/commentRemainder}}>{{commentStart}}{{#commentRemainder}}<span>{{commentRemainder}}</span>{{/commentRemainder}}</div>{{/comments}}
 		</script>
 	</body>
 </html>

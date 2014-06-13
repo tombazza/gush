@@ -26,7 +26,8 @@ var settings = {
 	var searchTable = false,
 		resultsIndex = [],
 		error = false,
-		resultsWrapper = false;
+		resultsWrapper = false,
+		commentCache;
 	
 	var templateEngine = (function() {
 		var templates = [];
@@ -61,6 +62,7 @@ var settings = {
 			$(document).on('focus', '#query', focusForm);
 			$(document).on('blur', '#query', blurForm);
 			$(document).on('click', '.info_content .tab-names li a', tabClick);
+			$(document).on('click', '#comments-page div', handleCommentClick);
 			connectionManager.setLoadingCallback(function() {
 				searchBox.addClass('loading');
 			}, function() {
@@ -117,6 +119,10 @@ var settings = {
 			if (searchTable) searchTable.clear();
 			resultsIndex = [];
 			connectionManager.submitSearch($('#query').val(), searchResponse);
+		}
+		
+		function handleCommentClick() {
+			$(this).toggleClass('visible');
 		}
 	
 		return {
@@ -405,7 +411,7 @@ var settings = {
 		templateData.torrentName = torrentData.name;
 		templateData.magnetLink = buildMagnetUri(torrentData);
 		if (torrentData.comments) {
-			templateData.comments = torrentData.comments;
+			templateData.comments = parseComments(torrentData.comments);
 		}
 		
 		$.each(torrentData.metadata, function (id, meta) {
@@ -444,12 +450,30 @@ var settings = {
 			});
 			$.each(previousComments, function(id, comment) {
 				if(comment) {
-					commentList.comments.push({comment: $(this).html()});
+					commentList.comments.push({comment: $(this).text()});
 				}
 			});
-			commentsPage.html(templateEngine.render('commentsPageContent', commentList));
+			commentsPage.html(templateEngine.render('commentsPageContent', parseComments(commentList.comments)));
 			$('#comments-tab a').html('Comments (' + commentList.comments.length + ')');
 		}
+	}
+	
+	function parseComments(comments) {
+		if((typeof comments) != "object") return;
+		var commentOutput = {comments: []},
+			maxLength = 30;
+		$.each(comments, function(id, comment) {
+			var text = comment.comment;
+			var output = {};
+			if(text.length <= maxLength) {
+				output.commentStart = text;
+			} else {
+				output.commentStart = text.substr(0, maxLength);
+				output.commentRemainder = text.substr(maxLength);
+			}
+			commentOutput.comments.push(output);
+		});
+		return commentOutput;
 	}
 	
 	function inObject(needle, haystack) {
