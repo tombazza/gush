@@ -214,7 +214,7 @@ var Scraper_Fenopy = function(cheerio) {
 
 	function getSearchResults(body, callback) {
 		var tmpResults = [];
-		if (body.indexOf('No hits.') == -1) {
+		if (body.indexOf('<h2>No match found</h2>') == -1) {
 			var $ = cheerio.load(body);
 			$('#search_table tbody tr').each(function() {
 				parseRow($(this), function(data) {
