@@ -24,6 +24,8 @@ define('APP_LOCATION', dirname(getcwd()));
 require_once APP_LOCATION . '/vendor/autoload.php';
 require_once APP_LOCATION . '/includes/Upstream.php';
 require_once APP_LOCATION . '/includes/Config.php';
+require_once APP_LOCATION . '/includes/Exception.php';
+require_once APP_LOCATION . '/includes/Loader.php';
 
 GushConfig::Load(include APP_LOCATION . '/config.php');
 $config = GushConfig::getData();
@@ -36,75 +38,5 @@ if($config['show_errors']) {
 	error_reporting(0);
 }
 
-$passcode = trim(file_get_contents($config['passcode_file']));
-
-class GushException extends Exception {
-	const Auth = 2;
-	const Data = 1;
-	const Generic = 0;
-	
-	public function __construct($message, $code = GushException::Generic) {
-		parent::__construct($message, $code);
-	}
-}
-
-class GushOutput {}
-
-function clean($string) {
-	$string = preg_replace('/[^a-z0-9 -_\(\)]/i', '', $string);
-	return trim(strip_tags($string));
-}
-
-/**
- * Loads an engine resource and returns it
- * @param string $engine
- * @return DataUpstream
- */
-function loadEngine($engine) {
-	$path = APP_LOCATION . '/includes/Data/' . basename($engine . '.php');
-	if(file_exists($path)) {
-		require_once $path;
-		$name = 'Data_' . $engine;
-		return new $name();
-	} else exit;
-}
-
-
-try {
-	if(!array_key_exists('p', $_POST) || $_POST['p'] != $passcode) {
-		throw new GushException('I don\'t know who you are.', GushException::Auth);
-	}
-	
-	$action = 'auth';
-	if(array_key_exists('a', $_POST)) $action = $_POST['a'];
-	
-	switch($action) {
-		case 'search':
-			$query = $_POST['q'];
-			$engine = $config['engines'][$_POST['e']];
-			$data = loadEngine($engine);
-			$output = $data->getData($query);
-			break;
-		case 'metadata':
-			$engineId = array_search(clean($_POST['e']), $config['engines']);
-			if($engineId !== false) {
-				$engine = $config['engines'][$engineId];
-				$data = loadEngine($engine);
-				$output = $data->getTorrentMeta($_POST['i']);
-			}
-			break;
-		default:
-			$output = new stdClass();
-			$output->auth = 1;
-			break;
-	}
-} catch (Exception $e) {
-	$output = new GushOutput();
-	$output->error = new stdClass();
-	$output->error->code = $e->getCode();
-	$output->error->message = $e->getMessage();
-}
-
-header('Content-type: application/json');
-echo json_encode($output);
-exit;
+$loader = new GushLoader($config);
+$loader->run();

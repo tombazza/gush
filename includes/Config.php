@@ -38,5 +38,3 @@ class GushConfig {
 		return self::$data;
 	}
 }
-
-?>
