@@ -415,7 +415,9 @@ var settings = {
 		}
 		
 		$.each(torrentData.metadata, function (id, meta) {
-			connectionManager.getMeta(meta.id, meta.name, receiveMetaData);
+			if((typeof meta) != 'undefined') {
+				connectionManager.getMeta(meta.id, meta.name, receiveMetaData);
+			}
 		});
 		
 		$.each(torrentData.magnetParts.tr, function(id, tracker) {
