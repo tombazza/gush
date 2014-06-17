@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 var settings = {
 	dataEndpoint: 'data.php',
-	numberEngines: 3 
+	numberEngines: 4
 };
 
 (function($, $Config) {
@@ -354,6 +354,7 @@ var settings = {
 			if (typeof (resultsIndex[hash]) === 'undefined') {
 				resultsIndex[hash] = item;
 				resultsIndex[hash].metadata = [item.metadata];
+				resultsIndex[hash].magnetParts.tr = deduplicateTrackers(resultsIndex[hash].magnetParts.tr);
 				var maxLength = 50;
 				var trimmedName = item.name.length > maxLength ? item.name.substring(0, (maxLength - 3)) + '...' : item.name.substring(0, maxLength);
 				tableData.data.push([
@@ -368,12 +369,20 @@ var settings = {
 			} else {
 				// add trackers to list
 				var trackers = resultsIndex[hash].magnetParts.tr;
-				resultsIndex[hash].magnetParts.tr = trackers.concat(item.magnetParts.tr);
+				resultsIndex[hash].magnetParts.tr = deduplicateTrackers(trackers.concat(item.magnetParts.tr));
 				resultsIndex[hash].metadata.push(item.metadata);
 				if(typeof (item.comments) !== 'undefined') resultsIndex[hash].comments = (resultsIndex[hash].comments + item.comments);
 			}
 		});
 		initTable(tableData);
+	}
+	
+	function deduplicateTrackers(trackers) {
+		var uniqueTrackers = [];
+		$.each(trackers, function(i, el){
+			if($.inArray(el, uniqueTrackers) === -1) uniqueTrackers.push(el);
+		});
+		return uniqueTrackers;
 	}
 
 	function initTable(tableData) {
@@ -431,7 +440,7 @@ var settings = {
 		magnetURI += torrentData.magnetParts.tr.join('&tr=') + '&dn=' + torrentData.magnetParts.dn[0];
 		return magnetURI;
 	}
-
+	
 	function receiveMetaData(data) {
 		if (data.files.length) {
 			var filesPage = $('#file-page');
