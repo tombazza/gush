@@ -60,19 +60,16 @@ class DataUpstream {
 				switch($format) {
 					case DataUpstream::FORMAT_JSON:
 						return json_decode($response->getBody());
-						break;
 					case DataUpstream::FORMAT_XML:
 						return simplexml_load_string($response->getBody());
 					default:
 						return $response->getBody();
-						break;
 				}
 			} else {
 				throw new Exception('Source returned code '.$response->getStatusCode());
 			}
 		} catch(Exception $e) {
 			throw new GushException($e->getMessage(), GushException::Data);
-			return false;
 		}
 	}
 	
@@ -93,9 +90,7 @@ class DataUpstream {
 				throw new Exception('Source returned code '.$response->getStatusCode());
 			}
 		} catch(Exception $e) {
-			print_r($e);
 			throw new GushException($e->getMessage(), GushException::Data);
-			return false;
 		}
 	}
 
