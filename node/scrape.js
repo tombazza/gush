@@ -72,22 +72,43 @@ var cheerio = require('cheerio'),
 	}
 
 	function process(response, query) {
-		upstream.loadUrl('http://thepiratebay.se/search/' + encodeURIComponent(query.search) + '/0/7/0', function(error, data) {
-			gotUpstreamResponse(response, error, data);
+		var upstreamUrl = '';
+		switch(query.engine) {
+			case 'piratebay':
+				upstreamUrl = 'http://thepiratebay.se/search/' + encodeURIComponent(query.search) + '/0/7/0';
+				break;
+			case 'fenopy':
+				upstreamUrl = 'http://fenopy.se/search/' + encodeURIComponent(query.search) + '.html?order=2';
+				break;
+		}
+		upstream.loadUrl(upstreamUrl, function(error, data) {
+			gotUpstreamResponse(query.engine, response, error, data);
 		});
 	}
 
-	function gotUpstreamResponse(response, error, data) {
+	function gotUpstreamResponse(engine, response, error, data) {
 		if (error) {
 			console.log(error);
 			send(response, {code: 500});
 		} else {
-			Scraper_Pirate.parse(data, function(results) {
-				send(response, {
-					code: 200,
-					body: results
-				});
-			});
+			switch(engine) {
+				case 'piratebay':
+					Scraper_Pirate.parse(data, function(results) {
+						send(response, {
+							code: 200,
+							body: results
+						});
+					});
+					break;
+				case 'fenopy':
+					Scraper_Fenopy.parse(data, function(results) {
+						send(response, {
+							code: 200,
+							body: results
+						});
+					});
+					break;
+			}
 		}
 	}
 
@@ -181,6 +202,39 @@ var Scraper_Pirate = function(cheerio) {
 				'date': recordDate
 			});
 		}
+	}
+
+	return {
+		parse: getSearchResults
+	};
+
+}(cheerio);
+
+var Scraper_Fenopy = function(cheerio) {
+
+	function getSearchResults(body, callback) {
+		var tmpResults = [];
+		if (body.indexOf('No hits.') == -1) {
+			var $ = cheerio.load(body);
+			$('#search_table tbody tr').each(function() {
+				parseRow($(this), function(data) {
+					tmpResults.push(data);
+				});
+			});
+		}
+		callback(tmpResults);
+	}
+
+	function parseRow(result, callback) {
+		callback({
+			'name': result.find('td.c1 a').text(),
+			'magnet': result.find("a[href^='magnet']").attr('href'),
+			'comments': 0,
+			'seeds': result.find('td.se').text(),
+			'peers': result.find('td.le').text(),
+			'size': result.find('td.si').eq(0).text(),
+			'date': moment().unix()
+		});
 	}
 
 	return {

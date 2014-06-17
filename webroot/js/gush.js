@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 var settings = {
 	dataEndpoint: 'data.php',
-	numberEngines: 2 
+	numberEngines: 3 
 };
 
 (function($, $Config) {
