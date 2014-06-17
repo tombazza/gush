@@ -80,6 +80,9 @@ var cheerio = require('cheerio'),
 			case 'fenopy':
 				upstreamUrl = 'http://fenopy.se/search/' + encodeURIComponent(query.search) + '.html?order=2';
 				break;
+			case 'torrenthound':
+				upstreamUrl = 'http://www.torrenthound.com/search/1/' + encodeURIComponent(query.search) + '/seeds:desc';
+				break;
 		}
 		upstream.loadUrl(upstreamUrl, function(error, data) {
 			gotUpstreamResponse(query.engine, response, error, data);
@@ -108,6 +111,13 @@ var cheerio = require('cheerio'),
 						});
 					});
 					break;
+				case 'torrenthound':
+					Scraper_Torrenthound.parse(data, function(results) {
+						send(response, {
+							code: 200,
+							body: results
+						});
+					});
 			}
 		}
 	}
@@ -195,8 +205,8 @@ var Scraper_Pirate = function(cheerio) {
 				'name': name,
 				'magnet': magnet,
 				'comments': comments,
-				'seeds': result.find('td').eq(2).text(),
-				'peers': result.find('td').eq(3).text(),
+				'seeds': parseInt(result.find('td').eq(2).text()),
+				'peers': parseInt(result.find('td').eq(3).text()),
 				'id': link.attr('href').split('/')[2],
 				'size': size,
 				'date': recordDate
@@ -230,9 +240,48 @@ var Scraper_Fenopy = function(cheerio) {
 			'name': result.find('td.c1 a').text(),
 			'magnet': result.find("a[href^='magnet']").attr('href'),
 			'comments': 0,
-			'seeds': result.find('td.se').text(),
-			'peers': result.find('td.le').text(),
+			'seeds': parseInt(result.find('td.se').text()),
+			'peers': parseInt(result.find('td.le').text()),
 			'size': result.find('td.si').eq(0).text(),
+			'date': moment().unix()
+		});
+	}
+
+	return {
+		parse: getSearchResults
+	};
+
+}(cheerio);
+
+var Scraper_Torrenthound = function(cheerio) {
+
+	function getSearchResults(body, callback) {
+		var tmpResults = [];
+		if (body.indexOf('No working torrents were found') == -1) {
+			var $ = cheerio.load(body, {
+				normalizeWhitespace: true
+			});
+			$('.cat').remove();
+			var table = $('table.searchtable').eq(1);
+			var rows = table.find('tr');
+			rows.each(function() {
+				parseRow($(this), function(data) {
+					tmpResults.push(data);
+				});
+			});
+		}
+		callback(tmpResults);
+	}
+
+	function parseRow(result, callback) {
+		var nameCell = result.find('td').eq(0).find('a').text();
+		callback({
+			'name': nameCell.substring(2),
+			'magnet': result.find("a[href^='magnet']").attr('href'),
+			'comments': 0,
+			'seeds': parseInt(result.find('span.seeds').text()),
+			'peers': parseInt(result.find('span.leeches').text()),
+			'size': result.find('span.size').text(),
 			'date': moment().unix()
 		});
 	}
