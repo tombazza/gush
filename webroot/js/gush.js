@@ -19,15 +19,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 var settings = {
 	dataEndpoint: 'data.php',
-	numberEngines: 4
+	numberEngines: 3
 };
 
 (function($, $Config) {
 	var searchTable = false,
 		resultsIndex = [],
 		error = false,
-		resultsWrapper = false,
-		commentCache;
+		resultsWrapper = false;
 	
 	var templateEngine = (function() {
 		var templates = [];
