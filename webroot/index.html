@@ -28,17 +28,18 @@
 				<li id="file-tab"><a href="javascript:void(0);">File Listing</a></li>
 				<li id="comments-tab"><a href="javascript:void(0);">Comments{{#commentsCount}} ({{commentsCount}}){{/commentsCount}}</a></li>
 			</ul>
-			<div id="info-page" class="tab-contents tab-shown">
-				<div class="title">
-					<h2>{{torrentName}}</h2>
-					<a href="{{magnetLink}}" class="magnet">Magnet Link</a>
-				</div>
-				<p><strong>Trackers:</strong></p>
-				<ul class="trackers">{{#trackers}}<li>{{trackerName}}</li>{{/trackers}}</ul>
-			</div>
+			<div id="info-page" class="tab-contents tab-shown">{{{infoPage}}}</div>
 			<div id="file-page" class="tab-contents"></div>
 			<div id="comments-page" class="tab-contents"></div>
 		</div>
+		</script>
+		<script type="text/mustache" id="infoPageContent">
+			<div class="title">
+				<h2>{{torrentName}}</h2>
+				<a href="{{magnetLink}}" class="magnet">Magnet Link</a>
+			</div>
+			<p><strong>Trackers{{#loadingTrackers}} (Loading...){{/loadingTrackers}}:</strong></p>
+			<ul class="trackers">{{#trackers}}<li>{{trackerName}}</li>{{/trackers}}</ul>
 		</script>
 		<script type="text/mustache" id="filePageContent">
 			<table><thead><tr><th>File</th><th>Size</th></tr></thead><tbody>

@@ -78,6 +78,12 @@ class GushLoader {
 					$output = $engineObject->getTorrentMeta($id);
 				}
 				break;
+			case 'trackers':
+				require_once APP_LOCATION . '/includes/Data/Bitsnoop.php';
+				$hash = filter_input(INPUT_POST, 'h', FILTER_SANITIZE_STRING);
+				$engine = new Data_Bitsnoop();
+				$output = $engine->getTrackers($hash);
+				break;
 		}
 		return $output;
 	}

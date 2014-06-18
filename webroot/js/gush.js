@@ -289,6 +289,14 @@ var settings = {
 				p: passcode
 			}, callback);
 		}
+		
+		function getTrackers(hash, callback) {
+			requests.add({
+				a: 'trackers',
+				p: passcode,
+				h: hash
+			}, callback);
+		}
 
 		function getAuthenticated() {
 			return authenticated;
@@ -300,7 +308,8 @@ var settings = {
 			performLogin: performLogin,
 			submitSearch: submitSearch,
 			hasAuth: getAuthenticated,
-			getMeta: getMetadata
+			getMeta: getMetadata,
+			getTrackers: getTrackers
 		};
 	}();
 
@@ -413,11 +422,9 @@ var settings = {
 	}
 
 	function drawInfoRow(hash) {
-		var torrentData = resultsIndex[hash];
-		var templateData = {};
-		templateData.trackers = [];
-		templateData.torrentName = torrentData.name;
-		templateData.magnetLink = buildMagnetUri(torrentData);
+		var torrentData = resultsIndex[hash],
+			templateData = {},
+			infoRow = '';
 		if (torrentData.comments) {
 			templateData.comments = parseComments(torrentData.comments);
 		}
@@ -427,11 +434,27 @@ var settings = {
 				connectionManager.getMeta(meta.id, meta.name, receiveMetaData);
 			}
 		});
-		
+		if(torrentData.trackersLoaded) {
+			connectionManager.getTrackers(hash, function(trackers) {
+				setTimeout(receiveTrackers(hash, trackers), 500);
+			});
+		}
+		templateData.infoPage = drawInfoPage(hash, torrentData.trackersLoaded);
+		infoRow = templateEngine.render('infoRow', templateData);
+		return infoRow;
+	}
+	
+	function drawInfoPage(hash, loading) {
+		var torrentData = resultsIndex[hash],
+			templateData = {};
+		templateData.trackers = [];
+		templateData.torrentName = torrentData.name;
+		templateData.magnetLink = buildMagnetUri(torrentData);
+		templateData.loadingTrackers = loading;
 		$.each(torrentData.magnetParts.tr, function(id, tracker) {
 			templateData.trackers.push({trackerName: decodeURIComponent(tracker)});
 		});
-		return templateEngine.render('infoRow', templateData);
+		return templateEngine.render('infoPageContent', templateData);
 	}
 	
 	function buildMagnetUri(torrentData) {
@@ -466,6 +489,14 @@ var settings = {
 			commentsPage.html(templateEngine.render('commentsPageContent', parseComments(commentList.comments)));
 			$('#comments-tab a').html('Comments (' + commentList.comments.length + ')');
 		}
+	}
+	
+	function receiveTrackers(hash, trackers) {
+		var torrentData = resultsIndex[hash],
+			newTrackerList = torrentData.magnetParts.tr.concat(trackers);
+		resultsIndex[hash].magnetParts.tr = deduplicateTrackers(newTrackerList);
+		resultsIndex[hash].trackersLoaded = true;
+		$('#info-page').html(drawInfoPage(hash, false));
 	}
 	
 	function parseComments(comments) {
