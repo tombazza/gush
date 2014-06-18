@@ -434,12 +434,14 @@ var settings = {
 				connectionManager.getMeta(meta.id, meta.name, receiveMetaData);
 			}
 		});
-		if(torrentData.trackersLoaded) {
+		if(!torrentData.trackersLoaded) {
+			templateData.infoPage = drawInfoPage(hash, true);
 			connectionManager.getTrackers(hash, function(trackers) {
-				setTimeout(receiveTrackers(hash, trackers), 500);
+				setTimeout(receiveTrackers(hash, trackers), 1000);
 			});
+		} else {
+			templateData.infoPage = drawInfoPage(hash, false);
 		}
-		templateData.infoPage = drawInfoPage(hash, torrentData.trackersLoaded);
 		infoRow = templateEngine.render('infoRow', templateData);
 		return infoRow;
 	}
