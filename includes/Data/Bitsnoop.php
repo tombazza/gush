@@ -27,11 +27,20 @@ class Data_Bitsnoop extends DataUpstream {
 		if($data == 'NOTFOUND' || $data == 'ERROR') {
 			return array();
 		} else {
+			foreach($data as $key => $row) {
+				if($row->NUM_SEEDERS > 0) {
+					$updated[$key] = $row->UPDATED;
+					$seeds[$key] = $row->NUM_SEEDERS;
+				} else {
+					unset($data[$key]);
+				}
+			}
+			array_multisort($seeds, SORT_DESC, $updated, SORT_DESC, $data);
 			$output = array();
 			foreach($data as $tracker) {
 				$output[] = $tracker->ANNOUNCE;
 			}
-			return $output;
+			return array_slice($output, 0, 20);
 		}
 	}
 
