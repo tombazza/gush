@@ -461,10 +461,12 @@ var settings = {
 	
 	function buildMagnetUri(torrentData) {
 		var magnetURI = 'magnet:?xt=' + torrentData.magnetParts.xt[0];
+		var i = 1;
 		$.each(torrentData.magnetParts.tr, function(key, tracker) {
-			if(tracker) {
+			if(tracker && i < 30) {
 				tracker = decodeURIComponent(tracker);
-				magnetURI += '&tr=' + encodeURIComponent(tracker);
+				magnetURI += '&tr.' + i + '=' + encodeURIComponent(tracker);
+				i = i + 1;
 			}
 		});
 		magnetURI += '&dn=' + torrentData.magnetParts.dn[0];
