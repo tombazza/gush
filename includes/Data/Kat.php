@@ -50,7 +50,7 @@ class Data_Kat extends DataUpstream {
 				'size' => $this->formatBytes((string) $torrent->contentLength),
 				'hash' => (string) $torrent->infoHash,
 				'magnetParts' => $this->parseMagnetLink($torrent->magnetURI),
-				'metadata' => array('name' => 'Kat', 'id' => str_replace(array('http://kickass.to/', '.html'), '', $item->link)),
+				'metadata' => array('name' => 'Kat', 'id' => str_replace(array('http://kickass.so/', '.html'), '', $item->link)),
 				'date' => strtotime($item->pubDate)
 			);
 		}
@@ -60,7 +60,7 @@ class Data_Kat extends DataUpstream {
 	// files: #torrent_files tr
 	
 	public function getTorrentMeta($torrentId) {
-		$url = 'http://kickass.to/'.$torrentId.'.html';
+		$url = 'http://kickass.so/'.$torrentId.'.html';
 		$data = $this->retreiveData($url, self::FORMAT_PLAIN);
 		$meta = array(
 			'comments' => $this->getComments($data),
@@ -119,7 +119,7 @@ class Data_Kat extends DataUpstream {
 		$urlData['field'] = $this->sortFields[$sortField];
 		$urlData['sorder'] = ($sortOrder ? 'asc' : 'desc');
 
-		$url = 'https://kickass.to/usearch/' . urlencode($query) . '/' . $page . '/?' . http_build_query($urlData);
+		$url = 'https://kickass.so/usearch/' . urlencode($query) . '/' . $page . '/?' . http_build_query($urlData);
 		return $url;
 	}
 
