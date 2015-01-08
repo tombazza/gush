@@ -12,6 +12,6 @@ return array(
 			CURLOPT_TIMEOUT => 5
 		)
 	),
-	'engines' => array('Piratebay', 'Kat'),
+	'engines' => array('Torrentz', 'Kat'),
 	'show_errors' => false
 );
