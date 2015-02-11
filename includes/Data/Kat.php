@@ -29,6 +29,8 @@ class Data_Kat extends DataUpstream {
 			self::SORT_SIZE => 'size',
 			self::SORT_AGE => 'time_add'
 	);
+	
+	private $domainName = 'kickass.to';
 
 	public function getData($query, $page = 1) {
 		$url = $this->buildUrl($query, $page);
@@ -60,7 +62,7 @@ class Data_Kat extends DataUpstream {
 	// files: #torrent_files tr
 	
 	public function getTorrentMeta($torrentId) {
-		$url = 'http://kickass.so/'.$torrentId.'.html';
+		$url = 'http://'.$this->domainName.'/'.$torrentId.'.html';
 		$data = $this->retreiveData($url, self::FORMAT_PLAIN);
 		$meta = array(
 			'comments' => $this->getComments($data),
@@ -119,7 +121,7 @@ class Data_Kat extends DataUpstream {
 		$urlData['field'] = $this->sortFields[$sortField];
 		$urlData['sorder'] = ($sortOrder ? 'asc' : 'desc');
 
-		$url = 'https://kickass.so/usearch/' . urlencode($query) . '/' . $page . '/?' . http_build_query($urlData);
+		$url = 'https://'.$this->domainName.'/usearch/' . urlencode($query) . '/' . $page . '/?' . http_build_query($urlData);
 		return $url;
 	}
 
