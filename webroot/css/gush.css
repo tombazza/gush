@@ -216,7 +216,7 @@ ul.tab-names {
 	border-width: 1px 1px 1px 1px;
 	border-color: #CCCCCC;
 	border-style: solid;
-	background-color: #CCCCCC;
+	background-color: #EEEEEE;
 	background-repeat: no-repeat;
 	background-position: 10px center;
 	padding: 5px 10px 5px 36px;
@@ -229,7 +229,7 @@ ul.tab-names {
 	border-bottom-color: #000;
 	opacity:0.8;
 	filter:alpha(opacity=80);
-	color: #808080;
+	color: #444444;
 	font-weight: bold;
 	text-decoration: none;
 	display: block;
