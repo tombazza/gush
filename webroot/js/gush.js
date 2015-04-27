@@ -465,7 +465,7 @@ var settings = {
 		$.each(torrentData.magnetParts.tr, function(key, tracker) {
 			if(tracker && i < 30) {
 				tracker = decodeURIComponent(tracker);
-				magnetURI += '&tr.' + i + '=' + encodeURIComponent(tracker);
+				magnetURI += '&tr=' + encodeURIComponent(tracker);
 				i = i + 1;
 			}
 		});
