@@ -30,7 +30,7 @@ class Data_Kat extends DataUpstream {
 			self::SORT_AGE => 'time_add'
 	);
 	
-	private $domainName = 'kickass.to';
+	private $domainName = 'kat.cr';
 
 	public function getData($query, $page = 1) {
 		$url = $this->buildUrl($query, $page);
