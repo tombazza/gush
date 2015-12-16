@@ -90,7 +90,7 @@ class GushLoader {
 	
 	/**
 	* Loads an engine resource and returns it
-	* @param string $engine
+	* @param string $engineId
 	* @return DataUpstream
 	*/
    private function loadEngine($engineId) {

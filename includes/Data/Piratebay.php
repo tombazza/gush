@@ -30,9 +30,9 @@ class Data_Piratebay extends DataUpstream {
 			self::SORT_AGE => 3
 	);
 
-	public function getData($query, $page = 0) {
-		$url = 'http://localhost:9001/?engine=piratebay&search=' . urlencode($query);
-		$data = $this->getLocalResponse($url);
+	public function getData($query) {
+		$url = $this->buildUrl($query);
+		$data = $this->retreiveData($url);
 		if(count($data) > 0) {
 			return $this->parseResponse($data);
 		} else {
@@ -41,22 +41,68 @@ class Data_Piratebay extends DataUpstream {
 	}
 
 	private function parseResponse($data) {
-		$response = array();
-		foreach($data as $item) {
-			$itemData = array();
-			$itemData['name'] = $item->name;
-			$itemData['magnet'] = $item->magnet;
-			$itemData['seeds'] = (int) $item->seeds;
-			$itemData['peers'] = (int) $item->peers;
-			$itemData['size'] = $this->convertFileSize($item->size);
-			$itemData['hash'] = $this->magnetToHash($itemData['magnet']);
-			$itemData['magnetParts'] = $this->parseMagnetLink($itemData['magnet']);
-			$itemData['comments'] = $item->comments;
-			$itemData['metadata'] = array('name' => 'Piratebay', 'id' => $item->id);
-			$itemData['date'] = $item->date;
-			$response[] = $itemData;
+		$document = new Query($data);
+		$records = $document->execute('#searchResult tr');
+		$output = array();
+		foreach($records as $row) {
+			if($row->hasAttribute('class') && $row->getAttribute('class') != 'header') {
+				$itemData = array();
+				$rowHTML = $this->nodeToHTML($row);
+				$rowDoc = new Query($rowHTML);
+				
+				// start doing lookups
+				$link = $rowDoc->execute('a[href*="magnet"]');
+				$name = $rowDoc->execute('a.detLink');
+				$seeds_peers = $rowDoc->execute('td[align="right"]');
+				$dataArea = $rowDoc->execute('font.detDesc');
+				
+				// Get file size, uploaded time
+				$dataParts = explode(",", $dataArea[0]->nodeValue);
+				
+				// ID from link
+				$detLink = explode("/", $name[0]->getAttribute('href'));
+				
+				$itemData['name'] = $name[0]->nodeValue;
+				$itemData['magnet'] = $link[0]->getAttribute('href');
+				$itemData['seeds'] = $seeds_peers[0]->nodeValue;
+				$itemData['peers'] = $seeds_peers[1]->nodeValue;
+				$itemData['size'] = $this->sizeFromData($dataParts);
+				$itemData['hash'] = $this->magnetToHash($itemData['magnet']);
+				$itemData['magnetParts'] = $this->parseMagnetLink($itemData['magnet']);
+				$itemData['comments'] = 0;
+				$itemData['metadata'] = array('name' => 'Piratebay', 'id' => $detLink[2]);
+				$itemData['date'] = $this->dateFromData($dataParts);
+				
+				$output[] = $itemData;
+			}
 		}
-		return $response;
+		return $output;
+	}
+	
+	private function sizeFromData($data) {
+		return $this->convertFileSize($data[1]);
+	}
+	
+	private function dateFromData($data) {
+		$dateParsed = trim(str_replace('Uploaded', '', $data[0]));
+		$date = explode(chr(194).chr(160), $dateParsed);
+		$timeParts = explode(":", $date[1]);
+		$output = '';
+		if($date[0] == 'Today') {
+			$output = mktime($timeParts[0], $timeParts[1]);
+		} elseif($date[0] == 'Y-day') {
+			$output = mktime($timeParts[0], $timeParts[1]) - 86400;
+		} else {
+			$dateParts = explode("-", $date[0]);
+			if(strpos($date[1], ':') !== false) {
+				// Date is this year, but with a time
+				$output = mktime($timeParts[0], $timeParts[1], 0, $dateParts[0], $dateParts[1], date('Y'));
+			} else {
+				// Date has a year specified, no time
+				$output = mktime(15, 0, 0, $dateParts[0], $dateParts[1], $date[1]);
+			}
+		}
+		return $output;
 	}
 	
 	public function getTorrentMeta($torrentId) {
@@ -68,7 +114,7 @@ class Data_Piratebay extends DataUpstream {
 	}
 	
 	private function getComments($torrentId) {
-		$url = 'http://thepiratebay.se/ajax_details_comments.php';
+		$url = 'http://thepiratebay.la/ajax_details_comments.php';
 		$post = array(
 			'id' => $torrentId,
 			'page' => '1'
