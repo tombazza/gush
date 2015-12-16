@@ -8,11 +8,6 @@
 		<link href="css/normalize.css" rel="stylesheet" type="text/css">
 		<link href="css/gush.css" rel="stylesheet" type="text/css">
 		<link href="css/jquery.dataTables.css" rel="stylesheet" type="text/css">
-		<script type="text/javascript" src="js/lib/jquery.min.js"></script>
-		<script type="text/javascript" src="js/lib/jquery.dataTables.min.js"></script>
-		<script type="text/javascript" src="js/lib/moment.min.js"></script>
-		<script type="text/javascript" src="js/lib/mustache.min.js"></script>
-		<script type="text/javascript" src="js/gush.js"></script>
 	</head>
 	<body class="load">
 		<div id="header">
@@ -49,5 +44,22 @@
 			<p>Long comments are trimmed, click to show the entire comment.</p>
 			{{#comments}}<div{{#commentRemainder}} class="expanded"{{/commentRemainder}}>{{commentStart}}{{#commentRemainder}}<span>{{commentRemainder}}</span>{{/commentRemainder}}</div>{{/comments}}
 		</script>
+		<script>
+		window.gushSettings = {
+			dataEndpoint: 'data.php',
+			numberEngines: <?php 
+				define('APP_LOCATION', dirname(getcwd()));
+				require_once APP_LOCATION . '/includes/Config.php';
+				GushConfig::Load(include APP_LOCATION . '/config.php');
+				$config = GushConfig::getData();
+				echo count($config['engines'])."\n";
+			?>
+		};
+		</script>
+		<script type="text/javascript" src="js/lib/jquery.min.js"></script>
+		<script type="text/javascript" src="js/lib/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" src="js/lib/moment.min.js"></script>
+		<script type="text/javascript" src="js/lib/mustache.min.js"></script>
+		<script type="text/javascript" src="js/gush.js"></script>
 	</body>
 </html>

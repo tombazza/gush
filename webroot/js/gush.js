@@ -17,10 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
-var settings = {
-	dataEndpoint: 'data.php',
-	numberEngines: 2
-};
 
 (function($, $Config) {
 	var searchTable = false,
@@ -536,4 +532,4 @@ var settings = {
 
 	$(document).ready(init);
 	
-})(jQuery, settings);
+})(jQuery, window.gushSettings);
