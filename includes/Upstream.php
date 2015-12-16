@@ -154,6 +154,7 @@ class DataUpstream {
 	
 	protected function cleanString($string) {
 		$output = trim(str_replace(array("\r\n", "\n", "\t"), array(' ', ' ', ''), strip_tags($string)));
+		$output = preg_replace('/\s+/', ' ', $output);
 		return $output;
 	}
 

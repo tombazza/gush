@@ -76,8 +76,10 @@ class Data_Kat extends DataUpstream {
 		$results = $dom->execute('.commentText');
 		$comments = array();
 		foreach($results as $parentElement) {
-			$newHTML = $this->nodeToHTML($parentElement);
-			$comments[] = $this->cleanString($newHTML);
+			$comment = $this->cleanString($parentElement->nodeValue);
+			if($comment != "") {
+				$comments[] = $comment;
+			}
 		}
 		return $comments;
 	}
@@ -93,6 +95,9 @@ class Data_Kat extends DataUpstream {
 		$row = array();
 	
 		foreach($results as $parentElement) {
+			if($parentElement->hasAttribute('class') && $parentElement->getAttribute('class') == 'innerFolder') {
+				continue;
+			}
 			$newHTML = $this->nodeToHTML($parentElement);
 			$subDom = new Query($newHTML);
 			$subResults = $subDom->execute('td');
