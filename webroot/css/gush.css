@@ -57,6 +57,10 @@ h1 {
 	overflow: hidden;
 }
 
+#search {
+	position: relative;
+}
+
 #search input {
 	width: 100%;
 	font-size: 30px;
@@ -75,10 +79,17 @@ h1 {
 	 outline: none;
 }
 
-#search .loading {
-	background-image: url('../images/loading.gif');
-	background-repeat: no-repeat;
-	background-position: 99%;
+#search #loading {
+	position: absolute;
+	right: 6px;
+	top: 6px;
+	height: 40px;
+	width: 40px;
+	display: none;
+}
+
+#search.loading #loading {
+	display: block;
 }
 
 #results {

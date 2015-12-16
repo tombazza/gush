@@ -13,7 +13,7 @@
 	<body class="load">
 		<div id="header">
 			<h1>Gush</h1>
-			<div id="search"><input type="password" id="query" name="query" placeholder="Enter password..."></div>
+			<div id="search"><input type="password" id="query" name="query" placeholder="Enter password..."><div id="loading"></div></div>
 			<div id="status"></div>
 		</div>
 		<table id="results"></table>
@@ -61,6 +61,7 @@
 		<script type="text/javascript" src="js/lib/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" src="js/lib/moment.min.js"></script>
 		<script type="text/javascript" src="js/lib/mustache.min.js"></script>
+		<script type="text/javascript" src="js/lib/progressbar.min.js"></script>
 		<script type="text/javascript" src="js/gush.js"></script>
 	</body>
 </html>

@@ -22,7 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	var searchTable = false,
 		resultsIndex = [],
 		error = false,
-		resultsWrapper = false;
+		resultsWrapper = false,
+		progress;
 	
 	var templateEngine = (function() {
 		var templates = [];
@@ -45,7 +46,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	})();
 	
 	var eventHandler = (function() {
-		var searchBox;
+		var searchBox,
+			endProgress;
 		
 		function init() {
 			searchBox = $('#query');
@@ -58,11 +60,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			$(document).on('blur', '#query', blurForm);
 			$(document).on('click', '.info_content .tab-names li a', tabClick);
 			$(document).on('click', '#comments-page div', handleCommentClick);
-			connectionManager.setLoadingCallback(function() {
-				searchBox.addClass('loading');
-			}, function() {
-				searchBox.removeClass('loading');
+			connectionManager.setLoadingCallback(startLoading, function() {
+				$('#search').removeClass('loading');
+				endProgress = true;
 			});
+		}
+		
+		function startLoading() {
+			$('#search').addClass('loading');
+			var progressPosition = 1;
+			endProgress = false;
+			progress.set(0);
+			function animateProgress() {
+				progress.animate(progressPosition, function() {
+					progressPosition++;
+					if(!endProgress) {
+						animateProgress();
+					}
+				});
+			}
+			animateProgress();
 		}
 		
 		function focusForm(e) {
@@ -147,6 +164,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			"file-size-desc": function (a, b) {
 				return ((a < b) ? 1 : ((a > b) ? -1 : 0));
 			}
+		});
+		
+		progress = new ProgressBar.Circle('#loading', {
+			color: '#FFFFFF',
+			strokeWidth: 10,
+			fill: 'none',
+			duration: 500,
+			trailColor: '#354a60',
+			trailWidth: 10
 		});
 	}
 
