@@ -392,6 +392,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	function initTable(tableData) {
 		if (!searchTable) {
 			searchTable = $('#results').DataTable(tableData);
+			$(window).resize(function() {
+				searchTable.columns.adjust().draw();
+			});
 		} else {
 			searchTable.rows.add(tableData.data).draw();
 		}
