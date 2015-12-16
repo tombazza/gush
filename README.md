@@ -12,7 +12,6 @@ Further, the data sources that are included are left purely as examples of an up
 ### Uses
 
 * [jQuery](http://jquery.org)
-* [Moment.js](http://momentjs.com/)
 * [mustache.js](https://github.com/janl/mustache.js)
 * [DataTables](https://datatables.net/)
 
@@ -22,17 +21,10 @@ Gush requires the following components to work correctly:
 
 * Composer
 * PHP 5.3+
-* Node.JS
 
 It is advisable to use a **[release](https://github.com/tombazza/gush/releases)** rather than the trunk which may have issues. To set up a copy of Gush, extract the source code to a directory and run:
 
 `$ php composer.phar install`
-
-Next, change to the `node` directory and install the node packages required:
-
-`$ npm install`
-
-To run the node service using nohup run `npm start` in the `node` directory, or use your favourite node daemonizing tool.
 
 Finally, set your web server to point to the `webroot` directory to access the application.
 
