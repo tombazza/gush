@@ -522,7 +522,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				}
 			});
 			commentsPage.html(templateEngine.render('commentsPageContent', parseComments(commentList.comments)));
-			$('#comments-tab a').html('Comments (' + commentList.comments.length + ')');
+			$('#comments-tab a').html('<i class="fa fa-comment-o"></i>Comments (' + commentList.comments.length + ')');
 		}
 	}
 	

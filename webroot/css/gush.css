@@ -55,6 +55,7 @@ h1 {
 	background-color: #3498DB;
 	text-shadow: 0 0 10px #1d5c86;
 	filter: dropshadow(color = #1d5c86, offx = 0, offy = 0);
+	cursor: default;
 }
 
 #header {
@@ -109,6 +110,7 @@ h1 {
 #results .info_row {
 	background-color: #ECF0F1 !important;
     padding: 0;
+	cursor: default;
 }
 
 .info_content {
@@ -119,6 +121,20 @@ h1 {
 	display: block;
 }
 
+ul.trackers {
+    list-style: square inside;
+    padding: 0;
+    margin: 0;
+}
+
+#file-page table {
+    width: 100%;
+    cursor: default;
+}
+
+#file-page table th {
+	cursor: default;
+}
 /* Status */
 #status {
 	margin: 10px;
@@ -174,6 +190,7 @@ table.dataTable thead tr th {
 	font-size: 16px;
 	border-bottom: 1px solid #dddddd;
 	text-align: center;
+	cursor: pointer;
 }
 
 #results.dataTable tbody tr > td:first-child {
@@ -187,6 +204,7 @@ table.dataTable thead tr th {
 
 #results.dataTable tbody tr > td.info_row {
 	padding: 5px 0 0;
+	cursor: default;
 }
 
 #results.dataTable > tbody > tr > td.sorting_1,#results.dataTable > tbody > tr > td.sorting_2, #results.dataTable > tbody > tr > td.sorting_3 {
@@ -231,9 +249,7 @@ ul.tab-names {
 	border-color: #CCCCCC;
 	border-style: solid;
 	background-color: #EEEEEE;
-	background-repeat: no-repeat;
-	background-position: 10px center;
-	padding: 5px 10px 5px 36px;
+	padding: 5px 10px 5px 10px;
 	-webkit-border-top-left-radius: 5px;
 	-webkit-border-top-right-radius: 5px;
 	-moz-border-radius-topleft: 5px;
@@ -249,16 +265,20 @@ ul.tab-names {
 	display: block;
 }
 
-.info_content ul.tab-names li#file-tab a {
-	background-image: url('../images/folder_page_white.png');
+.info_content ul.tab-names li a i {
+	padding-right: 5px;
 }
 
-.info_content ul.tab-names li#comments-tab a {
-	background-image: url('../images/comments.png');
+.info_content ul.tab-names li#file-tab.selected a i {
+	color: navy;
 }
 
-.info_content ul.tab-names li#info-tab a {
-	background-image: url('../images/information.png');
+.info_content ul.tab-names li#comments-tab.selected a i {
+	color: green;
+}
+
+.info_content ul.tab-names li#info-tab.selected a i {
+	color: #608ab7;
 }
 
 .info_content ul.tab-names li.selected a {
@@ -325,27 +345,28 @@ ul.tab-names {
 }
 
 a.magnet {
-	padding-left: 20px;
-	background-image: url('../images/magnet.png');
-	background-repeat: no-repeat;
-	padding: 10px 10px 10px 30px;
-	display: block;
-	background-position: 10px;
-	text-decoration: none;
-	background-color: #b9e5a4;
-	color: #0D5722;
-	font-weight: bold;
-	text-align: center;
-	width: 100px;
-	border-width: 0px;
-	float: left;
-	margin-bottom: 5px;
-	-webkit-box-shadow: 0px 3px 0px 0px #97cb7e;
-	-moz-box-shadow:    0px 3px 0px 0px #97cb7e;
-	box-shadow:         0px 3px 0px 0px #97cb7e;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
+    background-repeat: no-repeat;
+    padding: 10px;
+    display: block;
+    background-position: 10px;
+    text-decoration: none;
+    background-color: #b9e5a4;
+    color: #0D5722;
+    font-weight: bold;
+    border-width: 0px;
+    float: left;
+    margin-bottom: 5px;
+    -webkit-box-shadow: 0px 3px 0px 0px #97cb7e;
+    -moz-box-shadow: 0px 3px 0px 0px #97cb7e;
+    box-shadow: 0px 3px 0px 0px #97cb7e;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+a.magnet i {
+	color: #8C2222;
+    padding-left: 4px;
 }
 
 #info-page h2 {

@@ -6,6 +6,7 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+		<link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
 		<link href="css/normalize.css" rel="stylesheet" type="text/css">
 		<link href="css/gush.css" rel="stylesheet" type="text/css">
 		<link href="css/jquery.dataTables.css" rel="stylesheet" type="text/css">
@@ -20,9 +21,9 @@
 		<script type="text/mustache" id="infoRow">
 		<div class="info_content">
 			<ul class="tab-names">
-				<li id="info-tab" class="selected"><a href="javascript:void(0);">Details</a></li>
-				<li id="file-tab"><a href="javascript:void(0);">File Listing</a></li>
-				<li id="comments-tab"><a href="javascript:void(0);">Comments{{#commentsCount}} ({{commentsCount}}){{/commentsCount}}</a></li>
+				<li id="info-tab" class="selected"><a href="#"><i class="fa fa-info-circle"></i>Details</a></li>
+				<li id="file-tab"><a href="#"><i class="fa fa-file-o"></i>File Listing</a></li>
+				<li id="comments-tab"><a href="#"><i class="fa fa-comment-o"></i> Comments{{#commentsCount}} ({{commentsCount}}){{/commentsCount}}</a></li>
 			</ul>
 			<div id="info-page" class="tab-contents tab-shown">{{{infoPage}}}</div>
 			<div id="file-page" class="tab-contents"></div>
@@ -32,7 +33,7 @@
 		<script type="text/mustache" id="infoPageContent">
 			<div class="title">
 				<h2>{{torrentName}}</h2>
-				<a href="{{magnetLink}}" class="magnet">Download</a>
+				<a href="{{magnetLink}}" class="magnet"><i class="fa fa-magnet fa-rotate-180"></i> Magnet Link</a>
 			</div>
 			<p><strong>Trackers{{#loadingTrackers}} (Loading...){{/loadingTrackers}}:</strong></p>
 			<ul class="trackers">{{#trackers}}<li>{{trackerName}}</li>{{/trackers}}</ul>
