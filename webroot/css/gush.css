@@ -138,35 +138,22 @@ ul.trackers {
 /* Status */
 #status {
 	margin: 10px;
-	border-width: 1px;
-	border-style: solid;
 	display: none;
-	padding: 0 0 0 25px;
+	padding: 5px 10px;
 	line-height: 32px;
-	background-position: 5px center;
-	background-repeat: no-repeat;
 	cursor: pointer;
 }
 
 #status.error {
 	display: block;
 	color: #ffffff;
-	border-color: #c82a19;
 	background-color: #c82a19;
-	background-image: url('../images/cross.png');
-}
-
-#status.info {
-	display: block;
-	border-color: #A24162;
-	background-color: #5B474F;
-	background-image: url('../images/cross.png');
 }
 
 /* Data Table */
 table.dataTable thead tr th {
-	padding: 10px 18px;
-	border-color: #cccccc;
+	padding: 10px 20px;
+    border-bottom: 1px solid #ccc;
 }
 
 #results.dataTable > tbody > tr > td {
@@ -174,14 +161,6 @@ table.dataTable thead tr th {
 	color: #1C1C1C;
 	background-color: #ECF0F1;
 	white-space: nowrap;
-}
-
-#results.dataTable th.sorting_desc {
-	background-image: url('../images/sort_desc.png');
-}
-
-#results.dataTable th.sorting_asc {
-	background-image: url('../images/sort_asc.png');
 }
 
 #results.dataTable > tbody > tr > td {

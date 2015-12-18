@@ -174,6 +174,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			trailColor: '#354a60',
 			trailWidth: 10
 		});
+		displayError('test');
 	}
 
 	function sizeResultsArea() {
@@ -340,7 +341,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	function displayError(response) {
 		error = true;
 		$('#status').removeClass().addClass('error');
-		$('#status').html('Error: ' + response.message);
+		$('#status').html('<i class="fa fa-exclamation-circle"></i> Error: ' + response.message);
 		sizeResultsArea();
 		if (response.code == 2) {
 			$('#query').attr('disabled', 'disabled').blur();
