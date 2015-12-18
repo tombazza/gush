@@ -9,6 +9,7 @@
 table.dataTable thead th {
 	position: relative;
 	background-image: none !important; /* Remove the DataTables bootstrap integration styling */
+	outline: none;
 }
 
 table.dataTable thead th.sorting:after,
