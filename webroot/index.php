@@ -25,8 +25,8 @@
 		<div class="info_content">
 			<ul class="tab-names">
 				<li id="info-tab" class="selected"><a href="#"><i class="fa fa-info-circle"></i>Details</a></li>
-				<li id="file-tab"><a href="#"><i class="fa fa-file-o"></i>File Listing</a></li>
-				<li id="comments-tab"><a href="#"><i class="fa fa-comment-o"></i> Comments{{#commentsCount}} ({{commentsCount}}){{/commentsCount}}</a></li>
+				<li id="file-tab"><a href="#"><i class="fa fa-file"></i>File Listing</a></li>
+				<li id="comments-tab"><a href="#"><i class="fa fa-comments"></i> Comments{{#commentsCount}} ({{commentsCount}}){{/commentsCount}}</a></li>
 			</ul>
 			<div id="info-page" class="tab-contents tab-shown">{{{infoPage}}}</div>
 			<div id="file-page" class="tab-contents"></div>
