@@ -42,20 +42,22 @@ body {
 
 h1 {
 	margin: 0;
-	height: 75px;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-	padding: 15px;
-	font-size: 35px;
-	line-height: 40px;
-	font-weight: 400;
-	border-bottom: 5px solid #2980B9;
-	color: #FFFFFF;
-	background-color: #3498DB;
-	text-shadow: 0 0 10px #1d5c86;
-	filter: dropshadow(color = #1d5c86, offx = 0, offy = 0);
-	cursor: default;
+    height: 75px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 15px 15px 15px 46px;
+    font-size: 35px;
+    line-height: 40px;
+    font-weight: 400;
+    border-bottom: 5px solid #2980B9;
+    color: #FFFFFF;
+    background-color: #3498DB;
+    filter: dropshadow(color = #1d5c86, offx = 0, offy = 0);
+    cursor: default;
+    background-image: url('/images/logo.png');
+    background-position: 10px 50%;
+    background-repeat: no-repeat;
 }
 
 #header {
