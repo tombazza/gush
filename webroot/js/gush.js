@@ -174,7 +174,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			trailColor: '#354a60',
 			trailWidth: 10
 		});
-		displayError('test');
 	}
 
 	function sizeResultsArea() {
