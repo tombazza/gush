@@ -179,8 +179,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	function sizeResultsArea() {
 		headerHeight = $('#header').outerHeight();
 		resultsWrapper = $('#results_wrapper');
+		
 		if(resultsWrapper) {
 			var calcHeight = ($(window).height() - headerHeight);
+			$('.dataTables_scrollBody').css('height', (calcHeight - 43) + 'px');
 			resultsWrapper.css('height', calcHeight + 'px');
 			return calcHeight;
 		}
