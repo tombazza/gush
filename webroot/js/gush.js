@@ -427,6 +427,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			searchTable.rows.add(tableData.data).draw();
 		}
 		sizeResultsArea();
+		var scrollHead = $('.dataTables_scrollHead');
+		$('.dataTables_scrollBody').unbind('scroll');
+		$('.dataTables_scrollBody').bind('scroll', function() {
+			var scroll = $(this).scrollTop();
+			if(scroll > 0) {
+				if(!scrollHead.hasClass('scrolled')) {
+					$('.dataTables_scrollHead').addClass('scrolled');
+				}
+			} else {
+				$('.dataTables_scrollHead').removeClass('scrolled');
+			}
+		});
 		$('#results tbody tr').unbind('click');
 		$('#results tbody tr').bind('click', function () {
 			var tr = $(this);
