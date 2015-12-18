@@ -209,7 +209,7 @@ ul.tab-names {
 	height: 30px;
 	border-bottom: 1px solid #CCCCCC;
 	margin: 0;
-	padding: 0;
+	padding: 0 0 0 15px;
 }
 
 .info_content ul.tab-names li {
@@ -270,13 +270,11 @@ ul.tab-names {
 }
 
 .info_content .tab-contents {
-	border: 1px solid #CCCCCC;
-	border-top-width: 0;
 	clear: both;
 	height: 250px;
 	overflow: auto;
 	position: relative;
-	padding: 10px;
+	padding: 15px;
 	background-color: #FFFFFF;
 	display: none;
 	color: #333333;

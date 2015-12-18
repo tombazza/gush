@@ -374,7 +374,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			}, {
 				visible: false
 			}],
-			"scrollY": (sizeResultsArea() - 32),
+			"scrollY": (sizeResultsArea() - 43),
 			"scrollCollapse": false,
 			order: [[3, 'desc']],
 			autoWidth: true
