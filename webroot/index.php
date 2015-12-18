@@ -10,6 +10,9 @@
 		<link href="css/normalize.css" rel="stylesheet" type="text/css">
 		<link href="css/gush.css" rel="stylesheet" type="text/css">
 		<link href="css/jquery.dataTables.css" rel="stylesheet" type="text/css">
+		<link rel="icon" type="image/png" href="/images/favicon-32x32.png" sizes="32x32">
+		<link rel="icon" type="image/png" href="/images/favicon-96x96.png" sizes="96x96">
+		<link rel="icon" type="image/png" href="/images/favicon-16x16.png" sizes="16x16">
 	</head>
 	<body class="load">
 		<div id="header">
