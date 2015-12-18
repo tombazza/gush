@@ -206,9 +206,9 @@ table.dataTable thead tr th {
 }
 
 .dataTables_scrollHead.scrolled {
-	-webkit-box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.2);
-	-moz-box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.2);
-	box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.2);
+	-webkit-box-shadow: 0px 5px 5px 0px rgba(44,62,80,0.14);
+	-moz-box-shadow: 0px 5px 5px 0px rgba(44,62,80,0.14);
+	box-shadow: 0px 5px 5px 0px rgba(44,62,80,0.14);
 }
 
 .dataTables_scrollHead {
