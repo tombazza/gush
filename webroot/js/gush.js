@@ -92,7 +92,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		function blurForm(e) {
 			searchBox.removeClass('focus');
 			if (!connectionManager.hasAuth() && !error) {
-				$(this).val('').attr('type', 'text').val('passcode?');
+				$(this).val('').attr('type', 'text').val('Enter password...');
 			}
 		}
 
