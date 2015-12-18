@@ -23,7 +23,7 @@ table.dataTable thead th.sorting_desc:after {
 
 table.dataTable thead th.sorting:after {
 	content: "\f0dc";
-	color: #ddd;
+	color: #ccc;
 	font-size: 0.8em;
 	padding-top: 0.12em;
 }
