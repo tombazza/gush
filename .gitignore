@@ -17,3 +17,5 @@ node_modules
 nbproject
 npm-debug.log
 /webroot/data-test.php
+cache/*
+!cache/.gitkeep

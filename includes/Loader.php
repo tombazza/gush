@@ -62,6 +62,14 @@ class GushLoader {
 			return $output;
 		}
 		
+		if($this->config['cache']) {
+			$cacheHash = sha1(json_encode($_POST));
+			$cacheFile = APP_LOCATION . '/cache/' . $cacheHash;
+			if(file_exists($cacheFile)) {
+				return json_decode(file_get_contents($cacheFile));
+			}
+		}
+		
 		$engine = filter_input(INPUT_POST, 'e', FILTER_SANITIZE_STRING);
 	
 		switch($action) {
@@ -85,6 +93,11 @@ class GushLoader {
 				$output = $engine->getTrackers($hash);
 				break;
 		}
+		
+		if($this->config['cache']) {
+			file_put_contents($cacheFile, json_encode($output));
+		}
+		
 		return $output;
 	}
 	
