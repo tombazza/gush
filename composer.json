@@ -7,6 +7,6 @@
 	],
 	"require": {
 		"zendframework/zend-dom": "2.*",
-		"zendframework/zend-http": "2.*"
+		"guzzlehttp/guzzle": "6.*"
 	}
 }

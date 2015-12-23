@@ -20,7 +20,7 @@ Further, the data sources that are included are left purely as examples of an up
 Gush requires the following components to work correctly:
 
 * Composer
-* PHP 5.3+
+* PHP 5.6+
 
 It is advisable to use a **[release](https://github.com/tombazza/gush/releases)** rather than the trunk which may have issues. To set up a copy of Gush, extract the source code to a directory and run:
 
@@ -34,8 +34,9 @@ First create your password file and store it somewhere outside your web root. It
 
 Next, rename `config.php.dist` to `config.php`. You will need to edit this file to match your local settings.
 
+* **cache** (bool) - turn file caching of requests on/off
 * **passcode_file** (string) - path to the login passcode
-* **adapter_settings** (array) - options to be passed to **Zend\Http\Client**
+* **proxy** (string) - URL to proxy server for requests (set to `false` to disable proxying)
 * **engines** (array) - list of content upstream engines found in `includes/Data`
 * **show_errors** (boolean) - enable or disable showing of errors from PHP (does not silence exceptions)
 

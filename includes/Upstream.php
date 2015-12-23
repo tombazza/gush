@@ -19,9 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-use Zend\Dom\Query;
-use Zend\Http\Client;
-use Zend\Http\Request;
+use GuzzleHttp\Client;
 
 
 class DataUpstream {
@@ -46,16 +44,20 @@ class DataUpstream {
 
 	protected function retreiveData($url, $format = self::FORMAT_PLAIN, $postData = false) {
 		try {
-			$client = new Client($url, $this->config['adapter_settings']);
-			$request = new Request();
-			$request->setUri($url);
-			if($postData) {
-				$client->setEncType(Client::ENC_URLENCODED);
-				$request->setMethod(Request::METHOD_POST);
-				$request->getPost()->fromArray($postData);
+			if(array_key_exists('proxy', $this->config) && $this->config['proxy'] !== false) {
+				$client = new Client([
+					'proxy' => $this->config['proxy']
+				]);
+			} else {
+				$client = new Client();
 			}
-			$client->setRequest($request);
-			$response = $client->dispatch($request);
+			if($postData) {
+				$response = $client->request('POST', $url, [
+					'form_params' => $postData
+				]);
+			} else {
+				$response = $client->request('GET', $url);
+			}
 			if($response->getStatusCode() == 200) {
 				switch($format) {
 					case DataUpstream::FORMAT_JSON:
