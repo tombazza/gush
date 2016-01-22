@@ -51,12 +51,17 @@ class DataUpstream {
 			} else {
 				$client = new Client();
 			}
+			$options = [
+				'timeout' => 30,
+				'headers' => [
+					'User-Agent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.71 Safari/537.36'
+				]
+			];
 			if($postData) {
-				$response = $client->request('POST', $url, [
-					'form_params' => $postData
-				]);
+				$options['form_params'] = $postData;
+				$response = $client->request('POST', $url, $options);
 			} else {
-				$response = $client->request('GET', $url);
+				$response = $client->request('GET', $url, $options);
 			}
 			if($response->getStatusCode() == 200) {
 				switch($format) {
