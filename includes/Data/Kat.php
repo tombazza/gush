@@ -62,7 +62,7 @@ class Data_Kat extends DataUpstream {
 	// files: #torrent_files tr
 	
 	public function getTorrentMeta($torrentId) {
-		$url = 'http://'.$this->domainName.'/'.$torrentId.'.html';
+		$url = 'https://'.$this->domainName.'/'.$torrentId.'.html';
 		$data = $this->retreiveData($url, self::FORMAT_PLAIN);
 		$meta = array(
 			'comments' => $this->getComments($data),
