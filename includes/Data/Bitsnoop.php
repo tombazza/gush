@@ -22,7 +22,7 @@
 class Data_Bitsnoop extends DataUpstream {
 	
 	public function getTrackers($hash) {
-		$url = 'http://bitsnoop.com/api/trackers.php?hash=' . $hash . '&json=1';
+		$url = 'https://bitsnoop.com/api/trackers.php?hash=' . $hash . '&json=1';
 		$data = $this->retreiveData($url, self::FORMAT_JSON);
 		if($data == 'NOTFOUND' || $data == 'ERROR') {
 			return array();
